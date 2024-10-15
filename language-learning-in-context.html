@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language learning in context</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>     
+<div class="content-container">    
+    <div class="main-content"> 
+        <div class="utility-links">            
+            <a href="#" id="toggle-text">New text</a> |
+            <a href="#" id="toggle-play">Play</a> |            
+            <a href="#" id="toggle-words">Your vocabulary</a> |
+            <a href="#" id="download-images-button" onclick="downloadAllImages()">Download images</a> | 
+            <a href="#"id="toggle-about">About</a>
+        </div>   
+        <p id="text">
+            Guten Tag!
+        </p>        
+    </div>
+    <div class="sidebar">
+        <div class="about-container">
+            <h1>About</h1>
+            <h2>Language learning in context</h2>
+            <p>Hallo! I'm Jordi Rosell. This application was created by me to <strong>help users like me adquiring new german vocabulary in context</strong>.</p>
+            <p>With this app you, as a german learner, can:</p><ul>
+                <li>Click one word to see/update/add its definition, new/learning/learned status and usage examples with images and youtube links</li>
+                <li>Click <a href="#" id="toggle-text">New text</a> to use the text you want.</li>
+                <li>Edit/download/upload <a href="#" id="toggle-words">your vocabulary</a> using a CSV file format (Yes you can load your words here with simply copy&pasting them or uploading a CSV)</li>
+                <li>You can download all the images you upload in a zip file.</li>
+            </ul>
+
+            <p>Known issues:</p><ul>
+                <li>At the time, it only supports english and äöüáéíóúàèìòùâêß letters in words.</li>
+                <li>It's not multilingual (yet?) . The settings assume you are learning german.</li>
+                <li>The text is not saved. Only your vocabulary and images are saved in your browser. It can't (yet?) be shared on multiple devices.</li>
+            </ul>
+            <p>Let me know what you think.</p>
+            <p>I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
+        </div>
+        <div class="text-container" style="display:none;">   
+            <h1>New text</h1>     
+            <p>Use the text you want.</p>
+            <p><textarea id="text-input" class="text-area" rows="15" cols="40"></textarea></p>
+            <button id="update-text-button" class="edit-button">Update</button>
+        </div>
+        <div class="words-container" style="display:none;">   
+            <h1>Your vocabulary</h1>     
+            <p>Reload, update and download the words using a CSV file format with " delimiter and ; separator.<br>state;word;definition;example1;image1;example2;image2;...
+            </p>
+            <p><textarea id="csv-input" class="copy-paste-area" rows="15" cols="40"></textarea></p>
+            <button id="load-words-button" class="edit-button">Refresh</button>
+            <button id="update-words-button" class="edit-button">Update</button>
+            <button id="download-csv-button" class="edit-button">Download</button>
+            <button id="upload-link" class="edit-button">Upload</button> <input type="file" id="csv-upload" accept=".csv" style="display: none;">
+        </div>
+        <div id="definition-box" class="definition-box" style="display:none;">
+            <div id="state-selection"></div>
+            <h2 id="word-title"></h2>
+            <div id="definition-container">
+                <p id="definition"></p>
+                
+                <button class="edit-button" id="edit-definition-button" onclick="toggleEditDefinition()">Edit</button>
+            </div>
+            <div id="examples"></div>
+            <p><button class="edit-button" id="add-example-button">Add an example</button> | <span id="wiktionary"></span></p>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

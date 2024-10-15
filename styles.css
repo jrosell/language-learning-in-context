@@ -1,0 +1,152 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light background for better contrast */
+}
+
+.utility-links {
+    float:left;
+    padding: 10px 0px;
+}
+#text { clear:both}
+
+.content-container {
+    display: flex; /* Enables side-by-side layout */
+    margin: 20px; /* Space around the container */
+    background-color: #fff;
+}
+
+.main-content {
+    width: 50%; /* 50% width for main content */
+    padding: 20px;
+    background: white; /* White background for main content */
+    border-radius: 5px; /* Rounded corners for aesthetics */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.sidebar {
+    width: 50%; /* 50% width for sidebar */
+    padding: 15px;
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+.about-container h1 {
+    margin: 0 0 10px 0; /* Remove top margin and add space below */
+}
+
+.about-container {
+    padding: 10px;
+}
+
+
+.word {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+.definition-box {
+    margin-top: 0;
+    padding: 10px;
+}
+.example {
+    margin-top: 20px;
+    padding: 10px;
+    background: #eee;
+}
+.example img {
+    max-width: 80px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.example .caption, .example .image, .example .youtube {
+    color: #333;
+    font-style: normal;
+    font-size: 80%;
+}
+.example p {
+    font-style: italic;
+    color: #555;
+    margin: 0;
+}
+.google-search {
+    margin-left: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+.google-search:hover {
+    text-decoration: underline;
+}
+.edit-button, .remove-button  {
+    cursor: pointer;
+    text-decoration: underline;
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    font: inherit; /* Use inherited font styles */
+    margin: 0; /* Reset margin */
+}
+.edit-button {
+    color: #007bff; /* Change color to blue for better visibility */
+}
+.remove-button {    
+    color: red;
+}
+.edit-button:hover, .remove-button:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+.copy-paste-container {
+    margin-top: 20px;
+}
+.copy-paste-area {
+    height: auto; /* This allows the height to adjust based on the content */
+    resize: horizontal; /* Prevents resizing by the user */
+    min-height: 200px; /* Optional: Set a minimum height */
+}
+.new-word {
+    color: blue;
+}
+.learned-word {
+    color: #555;
+}
+.learning-word {
+    color: #558855; 
+}
+.word-with-definition {
+    font-weight: bold;
+}
+.word-without-definition {
+    font-weight: normal;
+}
+
+label {
+    display: inline-block; /* Makes labels behave like buttons */
+    padding: 10px; /* Adds some padding for a better look */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-right: 10px; /* Space between labels */
+}
+
+/* Color coding for different states */
+label input[type="radio"]:checked + span {
+    font-weight: bold; /* Make checked label bold */
+}
+
+label input[type="radio"]:checked[value="new"] + span {
+    background-color: lightblue; /* Color for "New" */
+    color: blue; /* Text color for "New" */
+}
+
+label input[type="radio"]:checked[value="learning"] + span {
+    background-color: lightgreen; /* Color for "Learning" */
+    color: #558855; /* Text color for "Learning" */
+}
+
+label input[type="radio"]:checked[value="learned"] + span {
+    background-color: lightgray; /* Color for "Learned" */
+    color: #555; /* Text color for "Learned" */
+}
+.edit-example { float: right; }
