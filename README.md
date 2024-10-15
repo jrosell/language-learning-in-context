@@ -1,6 +1,6 @@
 ## Language learning in context
 
-Hallo! I'm Jordi Rosell. This application was created by me to <strong>help users like me adquiring new german vocabulary in context</strong>.
+Hallo! I'm Jordi Rosell. <a href="https://jrosell.github.io/language-learning-in-context/">This application</a> was created by me to <strong>help users like me adquiring new german vocabulary in context</strong>.
 
 With this app you, as a german learner, can:
 
