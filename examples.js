@@ -1,5 +1,7 @@
 
 const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
+let examples = JSON.parse(localStorage.getItem('global_examples')) || {};
+
 if (!allWords["Guten"]) {
     allWords["Guten"] = {
         "state": "learning",
@@ -75,43 +77,22 @@ function refreshWordList() {
 function showDefinition(wordText) {
     const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
     const wordData = allWords[wordText] || { definition: "", examples: [], state: "new" };
+
     if (!allWords[wordText]) {
         allWords[wordText] = { definition: "", examples: [], state: "new" }; // Set to new by default
     }
+
+    // Set the word title and definition
     document.getElementById('word-title').innerText = wordText;
     document.getElementById('definition').innerText = wordData.definition;
+    
+    // Wiktionary link
     document.getElementById('wiktionary').innerHTML = `<a class="edit-button" href="https://de.wiktionary.org/w/index.php?search=${wordText}" target="_blank">Open Wiktionary</a>`;
-    const examplesContainer = document.getElementById('examples');
-    examplesContainer.innerHTML = ''; // Clear previous content
-    wordData.examples.forEach((example, index) => {
-        const exampleDiv = document.createElement('div');
-        exampleDiv.classList.add('example');
-        let youtubeHtml = ""
-        if (example.youtube && example.youtube.trim() !== "") {
-            youtubeHtml = ` <p><a class="youtube" href="${example.youtube}" target="_blank">YouTube</a></p>`
-        }
-        // exampleDiv.innerHTML = `
-        //     <div id="example-${index}">
-        //     <span id="example-text-${index}">${example.text}</span>
-        //     <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">Edit</button>
-        //     <p class="image"><a href="https://www.google.de/search?lr=lang_de&hl=de&udm=2&sa=X&biw=1440&bih=662&dpr=1&q=${encodeURIComponent(example.alt)}&tbm=isch" target="_blank" class="edit-button">Google Images</a> | <a href="#" class="edit-button" onclick="uploadExampleImage(${index}, '${wordText}')">Upload</a><input type="file" id="image-upload-${index}" style="display: none;" accept="image/*" onchange="handleImageUpload(event, index)" /></p>
-        //     <div id="example-image-${index}"></div>
-        //     <p class="caption">${example.alt}</p>
-        //     ${youtubeHtml}
-        //     </div>
-        // `;
-        exampleDiv.innerHTML = `
-            <div id="example-${index}">
-            <span id="example-text-${index}">${example.text}</span>
-            <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">Edit</button>
-            <p class="image"><a href="https://www.google.de/search?lr=lang_de&hl=de&udm=2&sa=X&biw=1440&bih=662&dpr=1&q=${encodeURIComponent(example.alt)}&tbm=isch" target="_blank" class="edit-button">Google Images</a></p>
-            <div id="example-image-${index}"></div>
-            <p class="caption">${example.alt}</p>
-            ${youtubeHtml}
-            </div>
-        `;
-        examplesContainer.appendChild(exampleDiv);
-    });
+    
+    // Call the showExamples function
+    showExamples(wordText);
+
+    // Set word state
     const stateContainer = document.getElementById('state-selection');
     stateContainer.innerHTML = `
         <div class="wordState">
@@ -126,9 +107,54 @@ function showDefinition(wordText) {
             </label>
         </div>
     `;
+    
+    // Update word color and visibility
     updateWordColor(wordText, wordData.state);
     document.getElementById('definition-box').style.display = 'block';
+
+    // Optionally load images related to the word
     loadImages();
+}
+
+
+function showExamples(wordText) {
+    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
+    const wordData = allWords[wordText] || { examples: [] };
+    
+    const examplesContainer = document.getElementById('examples');
+    examplesContainer.innerHTML = ''; // Clear previous content
+    
+    wordData.examples.forEach((exampleId, index) => {
+        const storedExamples = JSON.parse(localStorage.getItem('global_examples')) || {};
+        const example = storedExamples[exampleId];
+        
+        if (!example) return; // Skip if the example doesn't exist
+        
+        const exampleDiv = document.createElement('div');
+        exampleDiv.classList.add('example');
+        
+        let youtubeHtml = "";
+        if (example.youtube && example.youtube.trim() !== "") {
+            youtubeHtml = `<p><a class="youtube" href="${example.youtube}" target="_blank">YouTube</a></p>`;
+        }
+        
+        exampleDiv.innerHTML = `
+            <div id="example-${index}">
+                <span id="example-text-${index}">${example.text}</span>
+                <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${exampleId})">Edit</button>
+                <p class="image">
+                    <a href="https://www.google.de/search?lr=lang_de&hl=de&udm=2&sa=X&biw=1440&bih=662&dpr=1&q=${encodeURIComponent(example.alt)}&tbm=isch" target="_blank" class="edit-button">Google Images</a> 
+                    | <a href="#" class="edit-button" onclick="uploadExampleImage(${exampleId}, '${wordText}')">Upload</a>
+                    <input type="file" id="image-upload-${index}" style="display: none;" accept="image/*" onchange="handleImageUpload(event, ${exampleId})" />
+                </p>
+                <div id="example-image-${index}"></div>
+                <p class="caption">${example.alt}</p>
+                ${youtubeHtml}
+            </div>
+        `;
+        
+        examplesContainer.appendChild(exampleDiv);
+    });
 }
 
 function saveWordState(word) {
@@ -191,45 +217,109 @@ function toggleEditDefinition() {
         console.log("toggleEditDefinition: Changes saved!");
     }
 }
-function toggleEditExample(index) {
-    const word = document.getElementById('word-title').innerText; // Get the word title
-    const exampleData = allWords[word].examples[index];
-    const exampleContainer = document.getElementById(`example-text-${index}`);
-    const editButton = document.getElementById(`edit-example-${index}`);
-    const exampleCaption = document.querySelector(`#example-${index} .caption`);
-    const exampleImage = document.querySelector(`#example-${index} .image`);
-    const youtubeLink = document.querySelector(`#example-${index} a.youtube`);
+// function toggleEditExample(index) {
+//     const word = document.getElementById('word-title').innerText; // Get the word title
+//     const exampleData = allWords[word].examples[index];
+//     const exampleContainer = document.getElementById(`example-text-${index}`);
+//     const editButton = document.getElementById(`edit-example-${index}`);
+//     const exampleCaption = document.querySelector(`#example-${index} .caption`);
+//     const exampleImage = document.querySelector(`#example-${index} .image`);
+//     const youtubeLink = document.querySelector(`#example-${index} a.youtube`);
+//     if (editButton.innerText === "Save") {
+//         const newExampleText = document.getElementById(`example-textarea-${index}`).value;
+//         const newExampleAlt = document.getElementById(`example-alt-textarea-${index}`).value;
+//         const newYouTubeLink = document.getElementById(`example-youtube-textarea-${index}`).value;
+//         exampleData.text = newExampleText;
+//         exampleData.alt = newExampleAlt;
+//         exampleData.youtube = newYouTubeLink;
+//         allWords[word].examples[index] = exampleData;
+//         localStorage.setItem('words_customWords', JSON.stringify(allWords));
+//         showDefinition(word);
+//         console.log("toggleEditExample: Changes saved!");
+//         editButton.innerText = "Edit";
+//     } else {
+//         exampleCaption.style.display = "none";
+//         exampleImage.style.display = "none";
+//         if(youtubeLink) youtubeLink.style.display = "none";
+//         exampleContainer.innerHTML = `
+//             <textarea id="example-textarea-${index}" rows="2">${exampleData.text}</textarea><br>
+//             <textarea id="example-alt-textarea-${index}" rows="1">${exampleData.alt}</textarea><br>
+//             <textarea id="example-youtube-textarea-${index}" rows="1" placeholder="YouTube link">${exampleData.youtube || ''}</textarea><br>
+//             <button class="remove-button" onclick="softRemoveExample(${index})">Remove</button>
+//         `;
+//         editButton.innerText = "Save"; // Change button text to "Save"
+//     }
+// }
+
+function toggleEditExample(exampleId) {
+    // Fetch the examples from local storage
+    const storedExamples = JSON.parse(localStorage.getItem('global_examples')) || {};
+
+    if (!storedExamples[exampleId]) {
+        console.error(`Example data not found for ID: ${exampleId}`);
+        return; // Exit if example data is not found
+    }
+
+    const exampleData = storedExamples[exampleId]; // Use the example data from localStorage
+    const exampleContainer = document.getElementById(`example-text-${exampleId}`);
+    const editButton = document.getElementById(`edit-example-${exampleId}`);
+    const exampleCaption = document.querySelector(`#example-${exampleId} .caption`);
+    const exampleImage = document.querySelector(`#example-${exampleId} .image`);
+    const youtubeLink = document.querySelector(`#example-${exampleId} a.youtube`);
+
     if (editButton.innerText === "Save") {
-        const newExampleText = document.getElementById(`example-textarea-${index}`).value;
-        const newExampleAlt = document.getElementById(`example-alt-textarea-${index}`).value;
-        const newYouTubeLink = document.getElementById(`example-youtube-textarea-${index}`).value;
+        // Save changes
+        const newExampleText = document.getElementById(`example-textarea-${exampleId}`).value;
+        const newExampleAlt = document.getElementById(`example-alt-textarea-${exampleId}`).value;
+        const newYouTubeLink = document.getElementById(`example-youtube-textarea-${exampleId}`).value || '';
+
+        // Update the local storage example data
         exampleData.text = newExampleText;
         exampleData.alt = newExampleAlt;
         exampleData.youtube = newYouTubeLink;
-        allWords[word].examples[index] = exampleData;
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
-        showDefinition(word);
-        console.log("toggleEditExample: Changes saved!");
+
+        // Save updated examples back to local storage
+        storedExamples[exampleId] = exampleData; // Ensure the specific example is updated
+        localStorage.setItem('global_examples', JSON.stringify(storedExamples)); // Save back to localStorage
+
+        // Update the UI after saving
+        showDefinition(document.getElementById('word-title').innerText); // Refresh the definition for the current word
+        console.log(`toggleEditExample: Example ${exampleId} changes saved!`);
         editButton.innerText = "Edit";
     } else {
+        // Switch to edit mode
         exampleCaption.style.display = "none";
         exampleImage.style.display = "none";
-        if(youtubeLink) youtubeLink.style.display = "none";
+        if (youtubeLink) youtubeLink.style.display = "none";
+
         exampleContainer.innerHTML = `
-            <textarea id="example-textarea-${index}" rows="2">${exampleData.text}</textarea><br>
-            <textarea id="example-alt-textarea-${index}" rows="1">${exampleData.alt}</textarea><br>
-            <textarea id="example-youtube-textarea-${index}" rows="1" placeholder="YouTube link">${exampleData.youtube || ''}</textarea><br>
-            <button class="remove-button" onclick="removeExample(${index})">Remove</button>
+            <textarea id="example-textarea-${exampleId}" rows="2">${exampleData.text}</textarea><br>
+            <textarea id="example-alt-textarea-${exampleId}" rows="1">${exampleData.alt}</textarea><br>
+            <textarea id="example-youtube-textarea-${exampleId}" rows="1" placeholder="YouTube link">${exampleData.youtube || ''}</textarea><br>
+            <button class="remove-button" onclick="softRemoveExample('${exampleId}')">Remove</button>
         `;
         editButton.innerText = "Save"; // Change button text to "Save"
     }
 }
+
 
 function removeExample(index) {
     const word = document.getElementById('word-title').innerText;
     allWords[word].examples.splice(index, 1); // Remove the example from the array
     localStorage.setItem('words_customWords', JSON.stringify(allWords));
     showDefinition(word); // Refresh the display
+}
+function softRemoveExample(index) {
+    const word = document.getElementById('word-title').innerText; // Use the bottom-up panel word title
+    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
+    if (!allWords[word] || !allWords[word].examples[index]) {
+        console.error(`Example data for index ${index} not found for word: ${word}`);
+        return;
+    }
+    allWords[word].examples[index].state = "removed";
+    localStorage.setItem('words_customWords', JSON.stringify(allWords)); // Save to local storage
+    showDefinition(word);
+    console.log(`softRemoveExample: Example at index ${index} marked as removed!`);
 }
 
 function addExample() {
@@ -251,19 +341,43 @@ function saveNewExample() {
     const exampleText = document.getElementById('new-example-textarea').value;
     const exampleAlt = document.getElementById('new-example-alt-textarea').value;
     const exampleYouTube = document.getElementById('new-example-youtube-textarea').value;
-    if (exampleText.trim() !== "") {
-        if (!allWords[word]) {
-            allWords[word] = { definition: "", examples: [] }; // Initialize if not exists
-        }
-        allWords[word].examples.push({
-            text: exampleText, alt: exampleAlt, image: null, youtube: exampleYouTube
-        });
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
-        showDefinition(word);
-    } else {
-        alert("Das Beispiel darf nicht leer sein.");
+
+    if (exampleText.trim() === "") {
+        alert("Das Beispiel darf nicht leer sein."); // Example cannot be empty
+        return;
     }
+
+    // Fetch the examples from local storage (global_examples and words_customWords)
+    const storedExamples = JSON.parse(localStorage.getItem('global_examples')) || {};
+    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
+
+    // Generate a unique ID for the new example
+    const newExampleId = Date.now(); // Use current timestamp as a simple unique ID
+
+    // Save the new example in the global_examples storage
+    const newExampleData = {
+        text: exampleText,
+        alt: exampleAlt,
+        image: null,
+        youtube: exampleYouTube
+    };
+
+    storedExamples[newExampleId] = newExampleData; // Store the new example with its ID
+    localStorage.setItem('global_examples', JSON.stringify(storedExamples)); // Update global_examples in localStorage
+
+    // Save the example reference in the word-specific storage (words_customWords)
+    if (!allWords[word]) {
+        allWords[word] = { definition: "", examples: [] }; // Initialize word entry if it doesn't exist
+    }
+    allWords[word].examples.push(newExampleId); // Store the ID of the new example
+    localStorage.setItem('words_customWords', JSON.stringify(allWords)); // Update words_customWords in localStorage
+
+    // Refresh the definition box with the updated data
+    showDefinition(word);
+
+    console.log(`New example with ID ${newExampleId} added for word "${word}"!`);
 }
+
 
 function downloadCSV() {
     let csvContent = "data:text/csv;charset=utf-8,";
@@ -451,6 +565,38 @@ function playText(){
         msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == 'Google Deutsch'; })[0];
         speechSynthesis.speak(msg);
     }
+}
+
+function addOrLinkExampleToWord(word, newExampleText, newExampleAlt, newYouTubeLink) {
+    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
+    let exampleId = null;
+
+    // Search if the example already exists in the global examples
+    for (let id in examples) {
+        if (examples[id].text === newExampleText && examples[id].alt === newExampleAlt && examples[id].youtube === newYouTubeLink) {
+            exampleId = id;
+            break;
+        }
+    }
+
+    // If not found, create a new example
+    if (!exampleId) {
+        exampleId = 'example-' + Date.now(); // Unique ID
+        examples[exampleId] = {
+            text: newExampleText,
+            alt: newExampleAlt,
+            youtube: newYouTubeLink || ''
+        };
+        localStorage.setItem('global_examples', JSON.stringify(examples)); // Save examples globally
+    }
+
+    // Link the example to the word
+    if (!allWords[word].examples.includes(exampleId)) {
+        allWords[word].examples.push(exampleId);
+        localStorage.setItem('words_customWords', JSON.stringify(allWords)); // Save word data
+    }
+
+    console.log(`Example ${exampleId} added or linked to word: ${word}`);
 }
 
 function initialize() {
