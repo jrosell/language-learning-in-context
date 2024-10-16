@@ -17,7 +17,14 @@ Known issues:
 - This app uses a consent manager to track only users who have agreed to analytics tracking (aka. Google Analytics).
 - Mobile UX is bad. Use Desktop for better UX.
 
+- Mobile user experience is bad. At the moment, you'd better use wide screens.
+- At this time, it only supports English letters and letters like äöüáéíóúàèìòùâêß.
+- It’s not multilingual (yet). The settings assume you are learning German.
+- The text is not saved. Only your vocabulary and images are saved in your browser. It cannot (yet) be shared across multiple devices.
+- This app uses a consent manager to track only users who have agreed to analytics tracking (aka. Google Analytics).
+- Examples (still) not work for mulitple words.
+- You (still) cannot upload/donlowad images for your examples. Examples (still) not work for mulitple words.
 
-Let me know what you think.
+Let me know what you think. And if you want, you can <a href="https://github.com/jrosell/language-learning-in-context/">contribute or open an issue</a>.
 
 I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
