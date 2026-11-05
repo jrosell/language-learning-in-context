@@ -73,10 +73,11 @@ function refreshWordList() {
 }
 
 function showDefinition(wordText) {
-    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
     const wordData = allWords[wordText] || { definition: "", examples: [], state: "new" };
     if (!allWords[wordText]) {
-        allWords[wordText] = { definition: "", examples: [], state: "new" }; // Set to new by default
+        // Keep new words in the shared map used by saveWordState and updateWordColor.
+        allWords[wordText] = wordData;
+        localStorage.setItem('words_customWords', JSON.stringify(allWords));
     }
     document.getElementById('word-title').innerText = wordText;
     document.getElementById('definition').innerText = wordData.definition;
