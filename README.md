@@ -6,9 +6,9 @@ Choose a learning language the first time you use the app. To change it later, o
 
 With the app, you can:
 
-- Paste or enter texts, keep several open in tabs, close tabs without deleting their saved texts, and reopen them from the text manager.
+- Paste or enter texts, keep several open in tabs, close tabs without deleting their saved texts, and reopen them from the text manager. Delete saved texts you created; the welcome text is protected.
 - Edit a saved text and click a word to open its definition and examples.
-- Select a sentence to reveal its playback controls. Play reads from the active sentence through the rest of the text; the repeat icon switches Play to sentence-only mode.
+- Select a sentence to reveal its playback controls in a reserved space, so moving between sentences does not shift the text. Play reads from the active sentence through the rest of the text; the repeat icon switches Play to sentence-only mode.
 - Mark vocabulary as new, learning or learned.
 - Add definitions and usage examples.
 - Edit, import and export a separate vocabulary list for each learning language using CSV.
