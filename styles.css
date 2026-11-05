@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -7,10 +11,13 @@ body {
 }
 
 .utility-links {
-    float:left;
-    padding: 10px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 10px 0;
 }
-#text { clear:both}
+#text { margin: 0.75rem 0; }
 
 .content-container {
     display: flex; /* Enables side-by-side layout */
@@ -153,4 +160,128 @@ label input[type="radio"]:checked[value="learned"] + span {
 .edit-example { 
     position: absolute;        
     right: 20px; top: 20px;
+}
+
+.definition-box__header {
+    display: none;
+}
+
+.definition-box__close {
+    border: 0;
+    background: transparent;
+    color: #555;
+    cursor: pointer;
+    font: inherit;
+    padding: 8px 10px;
+}
+
+@media (max-width: 700px) {
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .main-content,
+    .sidebar {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .main-content {
+        padding: 16px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .sidebar {
+        padding: 16px;
+        box-shadow: none;
+    }
+
+    .utility-links {
+        gap: 8px;
+        padding: 8px 0 16px;
+    }
+
+    .utility-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        background: #f4f4f4;
+        text-decoration: none;
+    }
+
+    #text {
+        margin: 0;
+        padding: 8px 0 12px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .text-area,
+    .copy-paste-area {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        resize: vertical;
+    }
+
+    .definition-box {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        width: 100%;
+        max-height: 68vh;
+        max-height: 68dvh;
+        margin: 0;
+        padding: 8px 18px calc(18px + env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        border-radius: 16px 16px 0 0;
+        background: #fff;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.16);
+    }
+
+    .definition-box__header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-height: 40px;
+        margin-bottom: 4px;
+    }
+
+    .definition-box__handle {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        width: 36px;
+        height: 4px;
+        border-radius: 999px;
+        background: #bbb;
+        transform: translateX(-50%);
+    }
+
+    .definition-box__close {
+        min-height: 40px;
+        border-radius: 6px;
+    }
+
+    .wordState {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    label {
+        margin-right: 0;
+        padding: 8px;
+    }
 }
