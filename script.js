@@ -1,6 +1,6 @@
 
 const learningLanguages = {
-    de: { label: "German", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
+    de: { label: "German (Deutsch)", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
     en: { label: "English", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
     ca: { label: "Catalan", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia!" },
     vi: { label: "Vietnamese", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
