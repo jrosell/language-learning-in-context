@@ -53,11 +53,12 @@ async function runAction(page, action) {
   }
   if (action.type === "tap-saved-text-read") {
     const row = page.locator("#saved-text-list > li").filter({ hasText: action.title }).first();
-    await row.getByRole("button", { name: "Read", exact: true }).tap();
+    await row.locator(".saved-text-list__actions button").first().tap();
     return;
   }
   if (action.type === "tap-tab-close") {
-    await page.getByRole("button", { name: "Close " + action.title, exact: true }).tap();
+    const tab = page.locator("#text-tabs .text-tab").filter({ hasText: action.title }).first();
+    await tab.locator(".text-tab__close").tap();
     return;
   }
   throw new Error("Unsupported action type: " + action.type);
@@ -127,20 +128,22 @@ async function runAssertion(page, assertion) {
     return;
   }
   if (assertion.type === "saved-text-read-actions") {
-    const result = await page.evaluate(() => {
+    const result = await page.evaluate(({ readLabel, starterTitle }) => {
       const rows = Array.from(document.querySelectorAll("#saved-text-list > li"));
       return {
         rows: rows.length,
-        allRead: rows.length > 0 && rows.every(row => row.querySelector(".saved-text-list__actions button")?.textContent.trim() === "Read"),
-        welcomeHasDelete: rows.some(row =>
-          row.querySelector(".saved-text-list__title")?.textContent.trim() === "Welcome" &&
+        allRead: rows.length > 0 && rows.every(row =>
+          row.querySelector(".saved-text-list__actions button")?.textContent.trim() === readLabel
+        ),
+        starterHasDelete: rows.some(row =>
+          row.querySelector(".saved-text-list__title")?.textContent.trim() === starterTitle &&
           Boolean(row.querySelector(".saved-text-list__delete"))
         )
       };
-    });
+    }, assertion);
     assert.ok(result.rows > 0, "saved text list should have entries");
     assert.equal(result.allRead, true, "each saved text should use Read as its opening action");
-    assert.equal(result.welcomeHasDelete, false, "the welcome text should not have a Delete action");
+    assert.equal(result.starterHasDelete, false, "the welcome text should not have a Delete action");
     return;
   }
   throw new Error("Unsupported assertion type: " + assertion.type);
