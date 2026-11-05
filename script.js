@@ -284,7 +284,6 @@ function applyLearningLanguageSearch() {
 }
 
 function showReadView() {
-    document.getElementById("options-menu").open = false;
     [".about-container", ".text-container", ".words-container", ".definition-box"].forEach(selector => {
         const panel = document.querySelector(selector);
         if (panel) panel.style.display = "none";
@@ -315,7 +314,6 @@ function openLearningLanguageSettings() {
     document.getElementById("cancel-learning-language").hidden = firstRun;
     document.getElementById("language-picker").hidden = false;
     document.getElementById("open-language-settings").setAttribute("aria-expanded", "true");
-    document.getElementById("options-menu").open = false;
 }
 
 function cancelLearningLanguageChange() {
@@ -570,7 +568,6 @@ function deleteTextDocument(id) {
 
 function openTextManager() {
     stopTextPlayback();
-    document.getElementById("options-menu").open = false;
     document.querySelector(".text-container").style.display = "block";
     document.querySelector(".words-container").style.display = "none";
     document.querySelector(".about-container").style.display = "none";
@@ -1103,8 +1100,7 @@ function initialize() {
     document.getElementById('download-csv-button').onclick = downloadCSV;
     document.getElementById('add-example-button').onclick = addExample;      
     document.getElementById('edit-definition-button').onclick = toggleEditDefinition;   
-    document.getElementById('toggle-words').onclick = function() {
-       document.getElementById("options-menu").open = false;
+    function showVocabularyView() {
        const copyPasteContainer = document.querySelector('.words-container');    
        copyPasteContainer.style.display = 'block';
        const aboutContainer = document.querySelector('.about-container');  
@@ -1114,9 +1110,13 @@ function initialize() {
        const textContainer = document.querySelector('.text-container');
        textContainer.style.display = 'none';       
        loadCurrentWords()
+    }
+    document.getElementById('toggle-words').onclick = showVocabularyView;
+    document.getElementById('toggle-words-about').onclick = function(event) {
+        event.preventDefault();
+        showVocabularyView();
     };
     document.getElementById('toggle-about').onclick = function() {
-        document.getElementById("options-menu").open = false;
         const aboutContainer = document.querySelector('.about-container');
         aboutContainer.style.display = 'block';
         const copyPasteContainer = document.querySelector('.words-container');    
