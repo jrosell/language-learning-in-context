@@ -1,24 +1,19 @@
 ## Language learning in context
 
-Hallo! I'm Jordi Rosell. I created <a href="https://jrosell.github.io/language-learning-in-context/">this application</a> to help users like myself <strong>acquire new German vocabulary in context</strong>.
+This app helps language learners build vocabulary from texts they choose.
 
-With this app, as a German learner, you can:
+Select a learning language: German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish or Filipino. The interface is currently in English.
 
-- Click on a word to view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.
-- Click New text to use any text you want.
-- Edit, download, or upload your vocabulary using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
-- Download all the images you upload in a zip file.
+With the app, you can:
 
-Known issues:
+- Paste or enter text in the selected language and click a word to open its definition and examples.
+- Mark vocabulary as new, learning or learned.
+- Add definitions and usage examples.
+- Edit, import and export a separate vocabulary list for each learning language using CSV.
+- Save vocabulary and example images in your browser.
 
-- It’s not multilingual (yet). The settings assume you are learning German.
-- The text is not saved. Only your vocabulary and images are saved in your browser. It cannot (yet) be shared across multiple devices.
-- This app uses a consent manager to track only users who have agreed to analytics tracking (aka. Google Analytics).
-- Mobile user experience is bad. At the moment, you'd better use wide screens.
-- At this time, it only supports English letters and letters like äöüáéíóúàèìòùâêß.
-- Examples (still) not work for mulitple words.
-- You (still) cannot upload/donlowad images for your examples. Examples (still) not work for mulitple words.
+Word segmentation follows the selected language, including Chinese text that does not use spaces between words. Arabic and Urdu text is displayed right to left. The app uses the browser's speech synthesis when available.
 
-Let me know what you think. And if you want, you can <a href="https://github.com/jrosell/language-learning-in-context/">contribute or open an issue</a>.
+The text itself is not saved, and vocabulary is stored locally in the current browser. It is not synchronized across devices.
 
-I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
+[Open the app](https://jrosell.github.io/language-learning-in-context/).
