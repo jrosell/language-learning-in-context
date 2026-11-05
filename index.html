@@ -9,12 +9,12 @@
 <body>     
 <div class="content-container">    
     <div class="main-content"> 
-        <div class="utility-links">            
-            <a href="#" id="toggle-text">New text</a> |
-            <a href="#" id="toggle-play">Play</a> |            
-            <a href="#" id="toggle-words">Your vocabulary</a> |            
-            <a href="#"id="toggle-about">About</a>
-        </div>   
+        <nav class="utility-links" aria-label="Main controls">
+            <a href="#" id="toggle-text">New text</a>
+            <a href="#" id="toggle-play">Play</a>
+            <a href="#" id="toggle-words">Your vocabulary</a>
+            <a href="#" id="toggle-about">About</a>
+        </nav>   
         <p id="text">
             Guten Tag!
         </p>        
@@ -61,6 +61,10 @@
             <a href="#" id="download-images-button" class="edit-button" onclick="downloadAllImages()">Download images</a>
         </div>
         <div id="definition-box" class="definition-box" style="display:none;">
+            <div class="definition-box__header">
+                <span class="definition-box__handle" aria-hidden="true"></span>
+                <button type="button" class="definition-box__close" aria-label="Close word details" onclick="document.getElementById('definition-box').style.display='none';">Close</button>
+            </div>
             <div id="state-selection"></div>
             <h2 id="word-title"></h2>
             <div id="definition-container">
