@@ -41,6 +41,19 @@ body {
     background: #f1f4f7;
 }
 
+.text-action.is-selected,
+.text-action.is-selected:hover,
+.text-action.is-selected:focus-visible {
+    background: #e9e5f5;
+    color: #3f2d73;
+    font-weight: 600;
+}
+
+.text-action--auxiliary {
+    color: #666;
+    font-size: 0.85rem;
+}
+
 .options-menu {
     position: relative;
 }
@@ -124,10 +137,17 @@ body {
     cursor: default;
 }
 
-.language-picker select {
-    min-height: 40px;
-    max-width: 100%;
-    padding: 6px 10px;
+.language-picker__search {
+    display: flex;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.language-picker__search input {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
     border: 1px solid #aaa;
     border-radius: 6px;
     background: #fff;
@@ -135,8 +155,56 @@ body {
     font: inherit;
 }
 
+.language-picker__list {
+    flex-basis: 100%;
+    width: 100%;
+    min-width: 0;
+    max-height: 16rem;
+    margin: 0;
+    padding: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.language-option[hidden] {
+    display: none;
+}
+
+.language-option input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.language-option:hover,
+.language-option:focus-within {
+    background: #f1f4f7;
+}
+
+.language-picker__empty {
+    flex-basis: 100%;
+    margin: 0;
+    color: #555;
+}
+
 .language-picker__actions {
     display: flex;
+    flex-basis: 100%;
     flex-wrap: wrap;
     gap: 8px;
 }
@@ -353,6 +421,11 @@ label input[type="radio"]:checked[value="learned"] + span {
 
     .options-menu__items {
         min-width: 190px;
+    }
+
+    .language-picker__list {
+        max-height: 36vh;
+        max-height: 36dvh;
     }
 
     #text {
