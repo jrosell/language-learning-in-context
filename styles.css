@@ -10,22 +10,122 @@ body {
     background-color: #f4f4f4; /* Light background for better contrast */
 }
 
-.language-control {
+.app-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.text-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.text-action {
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #007bff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+.text-action:hover,
+.text-action:focus-visible {
+    background: #f1f4f7;
+}
+
+.options-menu {
+    position: relative;
+}
+
+.options-menu summary {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.options-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.options-menu summary::after {
+    content: " ▾";
+    font-size: 0.8em;
+}
+
+.options-menu[open] summary {
+    background: #f4f4f4;
+}
+
+.options-menu__items {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 500;
+    min-width: 210px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.options-menu__items button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+
+.options-menu__items button:hover,
+.options-menu__items button:focus-visible {
+    background: #f4f4f4;
+}
+
+.language-picker {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    margin: 0 0 12px;
+    margin: 8px 0 12px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
 }
 
-.language-control label {
+.language-picker[hidden] {
+    display: none;
+}
+
+.language-picker h2 {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.language-picker label {
     margin: 0;
     padding: 0;
     cursor: default;
 }
 
-.language-control select {
-    min-height: 44px;
+.language-picker select {
+    min-height: 40px;
     max-width: 100%;
     padding: 6px 10px;
     border: 1px solid #aaa;
@@ -35,6 +135,28 @@ body {
     font: inherit;
 }
 
+.language-picker__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.language-picker__actions button {
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    font: inherit;
+}
+
+.language-picker__actions button:hover,
+.language-picker__actions button:focus-visible {
+    background: #f1f4f7;
+}
+
 #text,
 #word-title,
 #definition,
@@ -42,13 +164,6 @@ body {
     font-family: system-ui, sans-serif;
 }
 
-.utility-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 12px;
-    padding: 10px 0;
-}
 #text { margin: 0.75rem 0; }
 
 .content-container {
@@ -232,19 +347,12 @@ label input[type="radio"]:checked[value="learned"] + span {
         box-shadow: none;
     }
 
-    .utility-links {
-        gap: 8px;
-        padding: 8px 0 16px;
+    .app-controls {
+        padding: 6px 0 10px;
     }
 
-    .utility-links a {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 6px 10px;
-        border-radius: 6px;
-        background: #f4f4f4;
-        text-decoration: none;
+    .options-menu__items {
+        min-width: 190px;
     }
 
     #text {
