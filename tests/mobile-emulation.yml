@@ -30,10 +30,12 @@ captures:
         selector: "#open-language-settings"
         name: aria-expanded
         value: "true"
+      - type: checked
+        selector: "input[name='learning-language'][value='en']"
       - type: no-horizontal-overflow
 
-  - name: read-german
-    screenshot: 02-read-german.png
+  - name: read-english
+    screenshot: 02-read-english.png
     actions:
       - type: tap
         selector: "#save-learning-language"
@@ -42,10 +44,16 @@ captures:
         selector: "#language-picker"
       - type: text-equals
         selector: "#language-menu-label"
-        value: Aprenc alemany
+        value: Learning English
+      - type: text-equals
+        selector: "#toggle-words"
+        value: Vocabulary
+      - type: text-equals
+        selector: "#toggle-about"
+        value: About
       - type: text-contains
         selector: "#text"
-        value: Guten Tag!
+        value: Hello!
 
   - name: catalan-language-search
     screenshot: 03-catalan-language-search.png
@@ -72,6 +80,12 @@ captures:
       - type: text-equals
         selector: "#language-menu-label"
         value: Aprenc català
+      - type: text-equals
+        selector: "#toggle-words"
+        value: Vocabulari
+      - type: text-equals
+        selector: "#toggle-about"
+        value: Sobre
       - type: text-contains
         selector: "#text"
         value: Bon dia.
@@ -144,6 +158,8 @@ captures:
         selector: "#add-text-tab"
     assertions:
       - type: saved-text-read-actions
+        readLabel: Llegeix
+        starterTitle: Benvingut
 
   - name: read-open-text
     screenshot: 11-read-open-text.png
