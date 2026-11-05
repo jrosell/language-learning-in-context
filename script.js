@@ -16,6 +16,7 @@ const learningLanguages = {
 
 const savedLanguage = localStorage.getItem("learning_language");
 let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "de";
+let hasSelectedLearningLanguage = Boolean(learningLanguages[savedLanguage]);
 
 function getVocabularyStorageKey(languageCode = currentLanguage) {
     return languageCode === "de" ? "words_customWords" : "words_customWords_" + languageCode;
@@ -138,9 +139,31 @@ function applyLearningLanguageAttributes() {
     });
 }
 
-function changeLearningLanguage(event) {
-    const nextLanguage = event.target.value;
-    if (!learningLanguages[nextLanguage] || nextLanguage === currentLanguage) return;
+function updateLanguageMenuLabel() {
+    document.getElementById("open-language-settings").textContent =
+        "Learning language: " + learningLanguages[currentLanguage].label;
+}
+
+function openLearningLanguageSettings() {
+    const firstRun = !hasSelectedLearningLanguage;
+    document.getElementById("learning-language").value = currentLanguage;
+    document.getElementById("language-picker-heading").textContent =
+        firstRun ? "Choose your learning language" : "Change learning language";
+    document.getElementById("save-learning-language").textContent =
+        firstRun ? "Start learning" : "Save language";
+    document.getElementById("cancel-learning-language").hidden = firstRun;
+    document.getElementById("language-picker").hidden = false;
+    document.getElementById("options-menu").open = false;
+}
+
+function cancelLearningLanguageChange() {
+    document.getElementById("learning-language").value = currentLanguage;
+    document.getElementById("language-picker").hidden = true;
+}
+
+function saveLearningLanguage() {
+    const nextLanguage = document.getElementById("learning-language").value;
+    if (!learningLanguages[nextLanguage]) return;
 
     const textElement = document.getElementById("text");
     const textInput = document.getElementById("text-input");
@@ -149,6 +172,7 @@ function changeLearningLanguage(event) {
     const inputWasSample = textInput.value.trim() === oldSample;
 
     currentLanguage = nextLanguage;
+    hasSelectedLearningLanguage = true;
     localStorage.setItem("learning_language", currentLanguage);
     allWords = loadWordsForLanguage();
     ensureGermanStarterWord();
@@ -157,9 +181,12 @@ function changeLearningLanguage(event) {
     if (textWasSample) textElement.textContent = newSample;
     if (inputWasSample) textInput.value = newSample;
 
+    document.getElementById("language-picker").hidden = true;
     document.getElementById("definition-box").style.display = "none";
     applyLearningLanguageAttributes();
     refreshWordList();
+    updateLanguageMenuLabel();
+
     const wordsContainer = document.querySelector(".words-container");
     if (wordsContainer && wordsContainer.style.display === "block") loadCurrentWords();
 }
@@ -576,8 +603,13 @@ function initialize() {
     if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
         textElement.textContent = learningLanguages[currentLanguage].sample;
     }
+    const firstRun = !hasSelectedLearningLanguage;
     document.getElementById("learning-language").value = currentLanguage;
-    document.getElementById("learning-language").addEventListener("change", changeLearningLanguage);
+    document.getElementById("language-picker").hidden = !firstRun;
+    document.getElementById("save-learning-language").textContent =
+        firstRun ? "Start learning" : "Save language";
+    document.getElementById("cancel-learning-language").hidden = firstRun;
+    updateLanguageMenuLabel();
     applyLearningLanguageAttributes();
     refreshWordList()     
     document.getElementById('load-words-button').onclick = loadCurrentWords;
@@ -589,6 +621,7 @@ function initialize() {
     document.getElementById('add-example-button').onclick = addExample;      
     document.getElementById('edit-definition-button').onclick = toggleEditDefinition;   
     document.getElementById('toggle-words').onclick = function() {
+       document.getElementById("options-menu").open = false;
        const copyPasteContainer = document.querySelector('.words-container');    
        copyPasteContainer.style.display = 'block';
        const aboutContainer = document.querySelector('.about-container');  
@@ -600,6 +633,7 @@ function initialize() {
        loadCurrentWords()
     };
     document.getElementById('toggle-about').onclick = function() {
+        document.getElementById("options-menu").open = false;
         const aboutContainer = document.querySelector('.about-container');
         aboutContainer.style.display = 'block';
         const copyPasteContainer = document.querySelector('.words-container');    
@@ -633,6 +667,9 @@ function initialize() {
     };
     document.getElementById('csv-upload').addEventListener('change', handleCSVUpload);
 
+    document.getElementById("open-language-settings").onclick = openLearningLanguageSettings;
+    document.getElementById("save-learning-language").onclick = saveLearningLanguage;
+    document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
     document.getElementById('toggle-play').onclick = playText
 }
 
