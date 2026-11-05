@@ -18,6 +18,10 @@ body {
     padding: 8px 0;
 }
 
+.options-menu {
+    margin-inline-start: auto;
+}
+
 .text-workspace {
     display: flex;
     align-items: center;
@@ -107,8 +111,21 @@ body {
 }
 
 .text-sentence {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 174px;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.text-sentence--paragraph-start {
+    margin-block-start: 0.8em;
+}
+
+.text-sentence__content {
+    min-width: 0;
 }
 
 .text-sentence.is-active .text-sentence__content {
@@ -124,14 +141,15 @@ body {
 .sentence-controls {
     display: inline-flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 3px;
-    margin-inline-start: 6px;
-    vertical-align: middle;
+    width: 100%;
     white-space: nowrap;
+    visibility: hidden;
 }
 
-.sentence-controls[hidden] {
-    display: none;
+.text-sentence.is-active .sentence-controls {
+    visibility: visible;
 }
 
 .sentence-controls button {
@@ -158,35 +176,35 @@ body {
     font-size: 1.1rem !important;
 }
 
-.text-actions {
+.text-container__header {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-.text-action {
-    min-height: 32px;
-    padding: 4px 8px;
+.text-container__header h1 {
+    margin: 0;
+}
+
+.panel-close {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    padding: 0;
     border: 0;
-    border-radius: 5px;
+    border-radius: 6px;
     background: transparent;
-    color: #007bff;
+    color: #333;
     cursor: pointer;
     font: inherit;
-    font-size: 0.9rem;
+    font-size: 1.8rem;
+    line-height: 1;
 }
 
-.text-action:hover,
-.text-action:focus-visible {
+.panel-close:hover,
+.panel-close:focus-visible {
     background: #f1f4f7;
-}
-
-.text-action.is-selected,
-.text-action.is-selected:hover,
-.text-action.is-selected:focus-visible {
-    background: #e9e5f5;
-    color: #3f2d73;
-    font-weight: 600;
 }
 
 .options-menu {
@@ -437,6 +455,10 @@ body {
     font: inherit;
 }
 
+.saved-text-list__actions .saved-text-list__delete {
+    color: #a12635;
+}
+
 .text-editor {
     margin-top: 16px;
     padding-top: 12px;
@@ -685,12 +707,17 @@ label input[type="radio"]:checked[value="learned"] + span {
 
     .sentence-controls {
         gap: 2px;
-        margin-inline-start: 4px;
+    }
+
+    .text-sentence {
+        grid-template-columns: minmax(0, 1fr) 156px;
+        gap: 4px;
     }
 
     .sentence-controls button {
         min-height: 40px;
-        padding: 4px 7px;
+        padding: 4px 5px;
+        font-size: 0.72rem;
     }
 
     .sentence-controls__repeat {

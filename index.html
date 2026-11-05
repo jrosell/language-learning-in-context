@@ -10,10 +10,6 @@
 <div class="content-container">    
     <div class="main-content"> 
 <div class="app-controls">
-            <div class="text-actions" role="group" aria-label="Text controls">
-                <button type="button" id="toggle-read" class="text-action is-selected" aria-pressed="true">Read</button>
-                <button type="button" id="toggle-text" class="text-action" aria-pressed="false">Change</button>
-            </div>
             <details id="options-menu" class="options-menu">
                 <summary>Options</summary>
                 <div class="options-menu__items" role="group" aria-label="Options">
@@ -52,7 +48,7 @@
             <p>Choose your learning language the first time you use the app. You can change it later from Options. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
             <p>As a learner, you can:</p><ul>
                 <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
-                <li>Use <a href="#" id="toggle-text-about">Change</a> to open saved texts, add one by pasting, or edit it.</li>
+                <li>Use the <strong>+</strong> button to open saved texts, add one by pasting, or edit it.</li>
                 <li>Edit, download, or upload  <a href="#" id="toggle-words">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
             </ul>
 
@@ -66,7 +62,10 @@
             <p>I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
         <div class="text-container" style="display:none;">
-            <h1>Texts</h1>
+            <div class="text-container__header">
+                <h1>Texts</h1>
+                <button type="button" id="close-text-manager" class="panel-close" aria-label="Close text manager" title="Close">×</button>
+            </div>
             <p>Open a saved text, or create one by pasting or typing it below.</p>
             <button type="button" id="new-text-button" class="edit-button">New text</button>
             <ul id="saved-text-list" class="saved-text-list" aria-label="Saved texts"></ul>
