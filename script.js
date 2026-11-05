@@ -17,6 +17,7 @@ const learningLanguages = {
 const savedLanguage = localStorage.getItem("learning_language");
 let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "de";
 let hasSelectedLearningLanguage = Boolean(learningLanguages[savedLanguage]);
+let pendingLanguage = currentLanguage;
 
 function getVocabularyStorageKey(languageCode = currentLanguage) {
     return languageCode === "de" ? "words_customWords" : "words_customWords_" + languageCode;
@@ -144,9 +145,87 @@ function updateLanguageMenuLabel() {
         "Learning language: " + learningLanguages[currentLanguage].label;
 }
 
+function normalizeLanguageSearch(value) {
+    return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function renderLearningLanguageOptions() {
+    const options = document.getElementById("learning-language-options");
+    options.replaceChildren();
+
+    Object.entries(learningLanguages).forEach(([code, language]) => {
+        const option = document.createElement("label");
+        option.className = "language-option";
+        option.dataset.searchText = normalizeLanguageSearch(language.label);
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "learning-language";
+        radio.value = code;
+        radio.checked = code === pendingLanguage;
+        radio.addEventListener("change", () => {
+            pendingLanguage = code;
+        });
+
+        const label = document.createElement("span");
+        label.textContent = language.label;
+        option.append(radio, label);
+        options.append(option);
+    });
+
+    applyLearningLanguageSearch();
+}
+
+function applyLearningLanguageSearch() {
+    const query = normalizeLanguageSearch(
+        document.getElementById("learning-language-search").value.trim()
+    );
+    const options = document.querySelectorAll(".language-option");
+    let visibleCount = 0;
+
+    options.forEach(option => {
+        option.hidden = Boolean(query) && !option.dataset.searchText.includes(query);
+        if (!option.hidden) visibleCount += 1;
+    });
+
+    document.getElementById("language-search-empty").hidden = visibleCount > 0;
+}
+
+function setTextActionState(mode) {
+    const readButton = document.getElementById("toggle-read");
+    const changeButton = document.getElementById("toggle-text");
+
+    readButton.setAttribute("aria-pressed", String(mode === "read"));
+    changeButton.setAttribute("aria-pressed", String(mode === "change"));
+    readButton.classList.toggle("is-selected", mode === "read");
+    changeButton.classList.toggle("is-selected", mode === "change");
+}
+
+function showReadView() {
+    document.getElementById("options-menu").open = false;
+    [".about-container", ".text-container", ".words-container", ".definition-box"].forEach(selector => {
+        const panel = document.querySelector(selector);
+        if (panel) panel.style.display = "none";
+    });
+    setTextActionState("read");
+}
+
+function syncLearningLanguageSelection() {
+    document.querySelectorAll('input[name="learning-language"]').forEach(input => {
+        input.checked = input.value === pendingLanguage;
+    });
+}
+
+function resetLanguagePickerSearch() {
+    document.getElementById("learning-language-search").value = "";
+    applyLearningLanguageSearch();
+}
+
 function openLearningLanguageSettings() {
     const firstRun = !hasSelectedLearningLanguage;
-    document.getElementById("learning-language").value = currentLanguage;
+    pendingLanguage = currentLanguage;
+    syncLearningLanguageSelection();
+    resetLanguagePickerSearch();
     document.getElementById("language-picker-heading").textContent =
         firstRun ? "Choose your learning language" : "Change learning language";
     document.getElementById("save-learning-language").textContent =
@@ -157,12 +236,14 @@ function openLearningLanguageSettings() {
 }
 
 function cancelLearningLanguageChange() {
-    document.getElementById("learning-language").value = currentLanguage;
+    pendingLanguage = currentLanguage;
+    syncLearningLanguageSelection();
+    resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
 }
 
 function saveLearningLanguage() {
-    const nextLanguage = document.getElementById("learning-language").value;
+    const nextLanguage = pendingLanguage;
     if (!learningLanguages[nextLanguage]) return;
 
     const textElement = document.getElementById("text");
@@ -172,6 +253,7 @@ function saveLearningLanguage() {
     const inputWasSample = textInput.value.trim() === oldSample;
 
     currentLanguage = nextLanguage;
+    pendingLanguage = currentLanguage;
     hasSelectedLearningLanguage = true;
     localStorage.setItem("learning_language", currentLanguage);
     allWords = loadWordsForLanguage();
@@ -181,6 +263,7 @@ function saveLearningLanguage() {
     if (textWasSample) textElement.textContent = newSample;
     if (inputWasSample) textInput.value = newSample;
 
+    resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
     document.getElementById("definition-box").style.display = "none";
     applyLearningLanguageAttributes();
@@ -190,6 +273,7 @@ function saveLearningLanguage() {
     const wordsContainer = document.querySelector(".words-container");
     if (wordsContainer && wordsContainer.style.display === "block") loadCurrentWords();
 }
+
 
 ensureGermanStarterWord();
 
@@ -599,12 +683,13 @@ function playText(){
 }
 
 function initialize() {
+    renderLearningLanguageOptions();
+    showReadView();
     const textElement = document.getElementById("text");
     if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
         textElement.textContent = learningLanguages[currentLanguage].sample;
     }
     const firstRun = !hasSelectedLearningLanguage;
-    document.getElementById("learning-language").value = currentLanguage;
     document.getElementById("language-picker").hidden = !firstRun;
     document.getElementById("save-learning-language").textContent =
         firstRun ? "Start learning" : "Save language";
@@ -622,6 +707,7 @@ function initialize() {
     document.getElementById('edit-definition-button').onclick = toggleEditDefinition;   
     document.getElementById('toggle-words').onclick = function() {
        document.getElementById("options-menu").open = false;
+       setTextActionState(null);
        const copyPasteContainer = document.querySelector('.words-container');    
        copyPasteContainer.style.display = 'block';
        const aboutContainer = document.querySelector('.about-container');  
@@ -634,6 +720,7 @@ function initialize() {
     };
     document.getElementById('toggle-about').onclick = function() {
         document.getElementById("options-menu").open = false;
+        setTextActionState(null);
         const aboutContainer = document.querySelector('.about-container');
         aboutContainer.style.display = 'block';
         const copyPasteContainer = document.querySelector('.words-container');    
@@ -644,6 +731,7 @@ function initialize() {
         textContainer.style.display = 'none';
     };    
     document.getElementById('toggle-text').onclick = function() {
+        setTextActionState("change");
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'block';
         const copyPasteContainer = document.querySelector('.words-container');    
@@ -667,6 +755,8 @@ function initialize() {
     };
     document.getElementById('csv-upload').addEventListener('change', handleCSVUpload);
 
+    document.getElementById("learning-language-search").addEventListener("input", applyLearningLanguageSearch);
+    document.getElementById("toggle-read").onclick = showReadView;
     document.getElementById("open-language-settings").onclick = openLearningLanguageSettings;
     document.getElementById("save-learning-language").onclick = saveLearningLanguage;
     document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
