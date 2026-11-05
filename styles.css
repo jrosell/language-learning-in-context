@@ -10,6 +10,38 @@ body {
     background-color: #f4f4f4; /* Light background for better contrast */
 }
 
+.language-control {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+}
+
+.language-control label {
+    margin: 0;
+    padding: 0;
+    cursor: default;
+}
+
+.language-control select {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+}
+
+#text,
+#word-title,
+#definition,
+#examples {
+    font-family: system-ui, sans-serif;
+}
+
 .utility-links {
     display: flex;
     flex-wrap: wrap;

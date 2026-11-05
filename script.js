@@ -1,62 +1,171 @@
 
-const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
-if (!allWords["Guten"]) {
-    allWords["Guten"] = {
-        "state": "learning",
-        "definition": "Das Wort „Guten“ ist der Akkusativ Singular von „gut“, was „gut“ oder „wohl“ bedeutet. Es wird oft in Kombination mit anderen Wörtern verwendet, um jemanden in verschiedenen Tageszeiten oder Situationen freundlich zu begrüßen oder gute Wünsche auszudrücken.",
-        "examples": [
-                {
-                    "text": "Guten Morgen",
-                    "alt": "Ein sonniger Start in den Tag.",
-                    "youtube": "https://youtu.be/S0RsIasa314?si=hRWnDH0bFWs6xcTT"
-                },
-                {
-                    "text": "Guten Appetit",
-                    "alt": "Ein leckeres Gericht serviert.",
-                    "youtube": "https://youtu.be/uwbxLOkjsOI?si=7lXz0RS7cRgmr36S&t=20"
-                }
-            ]
-        }
-    localStorage.setItem('words_customWords', JSON.stringify(allWords));    
-    console.log(`Updated Guten word`);
+const learningLanguages = {
+    de: { label: "German", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
+    en: { label: "English", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
+    ca: { label: "Catalan", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia!" },
+    vi: { label: "Vietnamese", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
+    zh: { label: "Chinese (Simplified)", locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
+    ar: { label: "Arabic", locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
+    ur: { label: "Urdu", locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
+    ru: { label: "Russian", locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
+    hi: { label: "Hindi", locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
+    fr: { label: "French", locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
+    es: { label: "Spanish", locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
+    fil: { label: "Filipino", locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
+};
+
+const savedLanguage = localStorage.getItem("learning_language");
+let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "de";
+
+function getVocabularyStorageKey(languageCode = currentLanguage) {
+    return languageCode === "de" ? "words_customWords" : "words_customWords_" + languageCode;
 }
 
+function loadWordsForLanguage(languageCode = currentLanguage) {
+    try {
+        return JSON.parse(localStorage.getItem(getVocabularyStorageKey(languageCode))) || {};
+    } catch (error) {
+        console.warn("Could not read saved vocabulary for " + languageCode, error);
+        return {};
+    }
+}
+
+let allWords = loadWordsForLanguage();
+
+function saveCurrentWords() {
+    localStorage.setItem(getVocabularyStorageKey(), JSON.stringify(allWords));
+}
+
+function ensureGermanStarterWord() {
+    if (currentLanguage !== "de" || allWords["Guten"]) return;
+
+    allWords["Guten"] = {
+        state: "learning",
+        definition: "Das Wort „Guten“ ist der Akkusativ Singular von „gut“, was „gut“ oder „wohl“ bedeutet. Es wird oft in Kombination mit anderen Wörtern verwendet, um jemanden in verschiedenen Tageszeiten oder Situationen freundlich zu begrüßen oder gute Wünsche auszudrücken.",
+        examples: [
+            {
+                text: "Guten Morgen",
+                alt: "Ein sonniger Start in den Tag.",
+                youtube: "https://youtu.be/S0RsIasa314?si=hRWnDH0bFWs6xcTT"
+            },
+            {
+                text: "Guten Appetit",
+                alt: "Ein leckeres Gericht serviert.",
+                youtube: "https://youtu.be/uwbxLOkjsOI?si=7lXz0RS7cRgmr36S&t=20"
+            }
+        ]
+    };
+    saveCurrentWords();
+}
+
+function getWordKey(word) {
+    const normalizedWord = word.normalize("NFC");
+    return Object.keys(allWords).find(storedWord => storedWord.normalize("NFC") === normalizedWord) || normalizedWord;
+}
+
+function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function getWordSegments(text) {
+    if (typeof Intl !== "undefined" && typeof Intl.Segmenter === "function") {
+        try {
+            const segmenter = new Intl.Segmenter(learningLanguages[currentLanguage].locale, { granularity: "word" });
+            return Array.from(segmenter.segment(text), item => ({
+                segment: item.segment,
+                isWordLike: Boolean(item.isWordLike)
+            }));
+        } catch (error) {
+            console.warn("Locale word segmentation is unavailable; using the fallback tokenizer.", error);
+        }
+    }
+
+    try {
+        const tokenPattern = new RegExp("[\\p{L}\\p{M}\\p{N}_]+(?:['’][\\p{L}\\p{M}\\p{N}_]+)*|[\\s\\S]", "gu");
+        const wordPattern = new RegExp("[\\p{L}\\p{N}]", "u");
+        return (text.match(tokenPattern) || []).map(segment => ({
+            segment,
+            isWordLike: wordPattern.test(segment)
+        }));
+    } catch (error) {
+        return Array.from(text, segment => ({
+            segment,
+            isWordLike: /[A-Za-z0-9]/.test(segment) || (segment.codePointAt(0) > 127 && !/\s/.test(segment))
+        }));
+    }
+}
 
 function makeWordsClickable(text) {
-    const regex = /(\b\w+[\wäöüáéíóúàèìòùâêß]*\b|[.,!?;?])/g; // Matches words and punctuation
-    const tokens = text.match(regex); // Get all matches
+    return getWordSegments(text).map(({ segment, isWordLike }) => {
+        if (!isWordLike) return escapeHtml(segment);
 
-    return tokens.map(token => {
-        const trimmedWord = token.replace(/[.,!?;?]/g, ''); // Clean punctuation for state check
-        const wordData = allWords[trimmedWord];
-        let classList = "word"; // Default class
+        const wordKey = getWordKey(segment);
+        const wordData = allWords[wordKey];
+        const classes = ["word"];
         if (wordData) {
-            switch (wordData.state) {
-                case 'learned':
-                    classList += " learned-word";
-                    break;
-                case 'learning':
-                    classList += " learning-word";
-                    break;
-                default:
-                    classList += " new-word";
-            }
-            if (wordData.definition && wordData.definition.trim() !== "") {
-                classList += " word-with-definition"; // Bold if definition exists
+            if (wordData.state === "learned") {
+                classes.push("learned-word");
+            } else if (wordData.state === "learning") {
+                classes.push("learning-word");
             } else {
-                classList += " word-without-definition"; // Normal if no definition
+                classes.push("new-word");
             }
-
+            classes.push(wordData.definition && wordData.definition.trim() !== ""
+                ? "word-with-definition"
+                : "word-without-definition");
         } else {
-            if (/[.,!?;?]/.test(token)) {
-                return `<span class="symbol">${token}</span>`; // Wrap punctuation in a symbol span
-            } else {
-                classList += " word-without-definition"; // Unknown word with no definition
-            }
+            classes.push("word-without-definition");
         }
-        return `<span class="${classList}">${token}</span>`;
-    }).join(' ');
+
+        return '<span class="' + classes.join(" ") + '">' + escapeHtml(segment) + "</span>";
+    }).join("");
 }
+
+function applyLearningLanguageAttributes() {
+    const language = learningLanguages[currentLanguage];
+    ["text", "text-input", "word-title", "definition", "examples"].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.lang = language.locale;
+            element.dir = language.direction;
+        }
+    });
+}
+
+function changeLearningLanguage(event) {
+    const nextLanguage = event.target.value;
+    if (!learningLanguages[nextLanguage] || nextLanguage === currentLanguage) return;
+
+    const textElement = document.getElementById("text");
+    const textInput = document.getElementById("text-input");
+    const oldSample = learningLanguages[currentLanguage].sample;
+    const textWasSample = textElement.innerText.trim() === oldSample;
+    const inputWasSample = textInput.value.trim() === oldSample;
+
+    currentLanguage = nextLanguage;
+    localStorage.setItem("learning_language", currentLanguage);
+    allWords = loadWordsForLanguage();
+    ensureGermanStarterWord();
+
+    const newSample = learningLanguages[currentLanguage].sample;
+    if (textWasSample) textElement.textContent = newSample;
+    if (inputWasSample) textInput.value = newSample;
+
+    document.getElementById("definition-box").style.display = "none";
+    applyLearningLanguageAttributes();
+    refreshWordList();
+    const wordsContainer = document.querySelector(".words-container");
+    if (wordsContainer && wordsContainer.style.display === "block") loadCurrentWords();
+}
+
+ensureGermanStarterWord();
+
 function refreshWordList() {
     document.getElementById('text').innerHTML = makeWordsClickable(document.getElementById('text').innerText);
     document.querySelectorAll('.word').forEach(word => {
@@ -73,15 +182,16 @@ function refreshWordList() {
 }
 
 function showDefinition(wordText) {
+    wordText = getWordKey(wordText);
     const wordData = allWords[wordText] || { definition: "", examples: [], state: "new" };
     if (!allWords[wordText]) {
         // Keep new words in the shared map used by saveWordState and updateWordColor.
         allWords[wordText] = wordData;
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
+        saveCurrentWords();
     }
     document.getElementById('word-title').innerText = wordText;
     document.getElementById('definition').innerText = wordData.definition;
-    document.getElementById('wiktionary').innerHTML = `<a class="edit-button" href="https://de.wiktionary.org/w/index.php?search=${wordText}" target="_blank">Open Wiktionary</a>`;
+    document.getElementById('wiktionary').innerHTML = `<a class="edit-button" href="https://${learningLanguages[currentLanguage].wiktionary}.wiktionary.org/w/index.php?search=${encodeURIComponent(wordText)}" target="_blank" rel="noopener">Open Wiktionary</a>`;
     const examplesContainer = document.getElementById('examples');
     examplesContainer.innerHTML = ''; // Clear previous content
     wordData.examples.forEach((example, index) => {
@@ -95,7 +205,7 @@ function showDefinition(wordText) {
         //     <div id="example-${index}">
         //     <span id="example-text-${index}">${example.text}</span>
         //     <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">Edit</button>
-        //     <p class="image"><a href="https://www.google.de/search?lr=lang_de&hl=de&udm=2&sa=X&biw=1440&bih=662&dpr=1&q=${encodeURIComponent(example.alt)}&tbm=isch" target="_blank" class="edit-button">Google Images</a> | <a href="#" class="edit-button" onclick="uploadExampleImage(${index}, '${wordText}')">Upload</a><input type="file" id="image-upload-${index}" style="display: none;" accept="image/*" onchange="handleImageUpload(event, index)" /></p>
+        //     <p class="image"><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(example.alt)}" target="_blank" class="edit-button">Google Images</a> | <a href="#" class="edit-button" onclick="uploadExampleImage(${index}, '${wordText}')">Upload</a><input type="file" id="image-upload-${index}" style="display: none;" accept="image/*" onchange="handleImageUpload(event, index)" /></p>
         //     <div id="example-image-${index}"></div>
         //     <p class="caption">${example.alt}</p>
         //     ${youtubeHtml}
@@ -105,7 +215,7 @@ function showDefinition(wordText) {
             <div id="example-${index}">
             <span id="example-text-${index}">${example.text}</span>
             <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">Edit</button>
-            <p class="image"><a href="https://www.google.de/search?lr=lang_de&hl=de&udm=2&sa=X&biw=1440&bih=662&dpr=1&q=${encodeURIComponent(example.alt)}&tbm=isch" target="_blank" class="edit-button">Google Images</a></p>
+            <p class="image"><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(example.alt)}" target="_blank" class="edit-button">Google Images</a></p>
             <div id="example-image-${index}"></div>
             <p class="caption">${example.alt}</p>
             ${youtubeHtml}
@@ -117,33 +227,41 @@ function showDefinition(wordText) {
     stateContainer.innerHTML = `
         <div class="wordState">
             <label class="new-word">
-                <input type="radio" name="wordState" onclick="saveWordState('${wordText}')" value="new" ${wordData.state === 'new' ? 'checked' : ''}> New
+                <input type="radio" name="wordState" value="new" ${wordData.state === 'new' ? 'checked' : ''}> New
             </label>
             <label class="learning-word">
-                <input type="radio" name="wordState" onclick="saveWordState('${wordText}')" value="learning" ${wordData.state === 'learning' ? 'checked' : ''}> Learning
+                <input type="radio" name="wordState" value="learning" ${wordData.state === 'learning' ? 'checked' : ''}> Learning
             </label>
             <label class="learned-word">
-                <input type="radio" name="wordState" onclick="saveWordState('${wordText}')" value="learned" ${wordData.state === 'learned' ? 'checked' : ''}> Learned
+                <input type="radio" name="wordState" value="learned" ${wordData.state === 'learned' ? 'checked' : ''}> Learned
             </label>
         </div>
     `;
+    stateContainer.querySelectorAll('input[name="wordState"]').forEach(input => {
+        input.addEventListener('change', () => saveWordState(wordText));
+    });
     updateWordColor(wordText, wordData.state);
     document.getElementById('definition-box').style.display = 'block';
-    loadImages();
+    loadImages(wordText);
 }
 
 function saveWordState(word) {
+    const wordKey = getWordKey(word);
     const selectedState = document.querySelector('input[name="wordState"]:checked').value;
-    allWords[word].state = selectedState;
-    localStorage.setItem('words_customWords', JSON.stringify(allWords));    
-    console.log(`State für "${word}" gespeichert: ${selectedState}`);
-    updateWordColor(word, selectedState);
+    if (!allWords[wordKey]) {
+        allWords[wordKey] = { definition: "", examples: [], state: "new" };
+    }
+    allWords[wordKey].state = selectedState;
+    saveCurrentWords();
+    console.log(`State for "${wordKey}" saved: ${selectedState}`);
+    updateWordColor(wordKey, selectedState);
 }
 function updateWordColor(word, state) {
+    const wordKey = getWordKey(word);
     const wordElements = document.querySelectorAll('.word');
-    const wordData = allWords[word]; // Get the word data
+    const wordData = allWords[wordKey];
     wordElements.forEach(element => {
-        if (element.innerText === word) {
+        if (element.innerText.normalize('NFC') === wordKey.normalize('NFC')) {
             element.classList.remove('learned-word', 'new-word', 'learning-word', 'word-with-definition', 'word-without-definition');
             switch (state) {
                 case 'new':
@@ -187,7 +305,7 @@ function toggleEditDefinition() {
         const newDefinition = document.getElementById('definition-edit').value;
         definitionText.innerText = newDefinition;
         allWords[word].definition = newDefinition;
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
+        saveCurrentWords();
         updateWordColor(word, allWords[word].state); // Call to update the color and style
         console.log("toggleEditDefinition: Changes saved!");
     }
@@ -208,7 +326,7 @@ function toggleEditExample(index) {
         exampleData.alt = newExampleAlt;
         exampleData.youtube = newYouTubeLink;
         allWords[word].examples[index] = exampleData;
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
+        saveCurrentWords();
         showDefinition(word);
         console.log("toggleEditExample: Changes saved!");
         editButton.innerText = "Edit";
@@ -229,7 +347,7 @@ function toggleEditExample(index) {
 function removeExample(index) {
     const word = document.getElementById('word-title').innerText;
     allWords[word].examples.splice(index, 1); // Remove the example from the array
-    localStorage.setItem('words_customWords', JSON.stringify(allWords));
+    saveCurrentWords();
     showDefinition(word); // Refresh the display
 }
 
@@ -259,7 +377,7 @@ function saveNewExample() {
         allWords[word].examples.push({
             text: exampleText, alt: exampleAlt, image: null, youtube: exampleYouTube
         });
-        localStorage.setItem('words_customWords', JSON.stringify(allWords));
+        saveCurrentWords();
         showDefinition(word);
     } else {
         alert("Das Beispiel darf nicht leer sein.");
@@ -288,7 +406,6 @@ function downloadCSV() {
     document.body.removeChild(link); // Clean up
 }
 function loadCurrentWords() {
-    const allWords = JSON.parse(localStorage.getItem('words_customWords')) || {};
     let csvContent = "state;word;definition;example1;image1;youtube1;example2;image2;youtube2;...\n"; // CSV header
     Object.keys(allWords).forEach(word => {
         const wordData = allWords[word];
@@ -317,7 +434,7 @@ function updateWordsFromCSV(csvData) {
             continue; // Skip lines that don't have at least state and word
         }
         const state = columns[0].trim();
-        const word = columns[1].trim();
+        const word = columns[1].trim().normalize('NFC');
         const definition = columns.length > 2 ? columns[2].trim() : '';
         const examples = [];
         for (let j = 3; j < columns.length; j += 3) {
@@ -336,10 +453,10 @@ function updateWordsFromCSV(csvData) {
                 definition: definition, 
                 examples: examples 
             };
-            updateWordColor(word, state);
         }
     }
-    localStorage.setItem('words_customWords', JSON.stringify(updatedWords));    
+    allWords = updatedWords;
+    saveCurrentWords();
     refreshWordList();
     alert("Words updated successfully!");
 }
@@ -381,12 +498,12 @@ function handleImageUpload(event, exampleId, word) {
 }
 function saveImageToStorage(exampleId, word, imageDataUrl) {
     const storedImages = JSON.parse(localStorage.getItem('exampleImages')) || {};
-    storedImages[word +";"+exampleId] = {        
+    storedImages[currentLanguage + ";" + word + ";" + exampleId] = {
         image: imageDataUrl
     };
     localStorage.setItem('exampleImages', JSON.stringify(storedImages));
     alert("Image saved successfully for word: " + word);
-    loadImages()
+    loadImages(word);
 }
 function renderImage(exampleId, imageDataUrl) {
     const imageContainer = document.getElementById(`example-image-${exampleId}`);
@@ -400,13 +517,14 @@ function renderImage(exampleId, imageDataUrl) {
     img.style.marginTop = '10px'; // Add some margin for aesthetics
     imageContainer.appendChild(img);
 }
-function loadImages() {
+function loadImages(word) {
     const storedImages = JSON.parse(localStorage.getItem('exampleImages')) || {};
-    for (const key in storedImages) {
-        const [word, exampleId] = key.split(';'); // Split key to get word and exampleId
-        const { image } = storedImages[key];
-        renderImage(exampleId, image); // Render each image
-    }
+    document.querySelectorAll('[id^="example-image-"]').forEach(container => {
+        const exampleId = container.id.replace("example-image-", "");
+        const imageRecord = storedImages[currentLanguage + ";" + word + ";" + exampleId]
+            || (currentLanguage === "de" ? storedImages[word + ";" + exampleId] : null);
+        if (imageRecord) renderImage(exampleId, imageRecord.image);
+    });
 }
 
 function downloadAllImages() {
@@ -448,13 +566,19 @@ function dataURLtoBlob(dataURL) {
 function playText(){
     if ('speechSynthesis' in window) {
         var msg = new SpeechSynthesisUtterance(document.querySelector("#text").innerText);                
-        msg.lang='de'
-        msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == 'Google Deutsch'; })[0];
+        msg.lang = learningLanguages[currentLanguage].locale;
         speechSynthesis.speak(msg);
     }
 }
 
 function initialize() {
+    const textElement = document.getElementById("text");
+    if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
+        textElement.textContent = learningLanguages[currentLanguage].sample;
+    }
+    document.getElementById("learning-language").value = currentLanguage;
+    document.getElementById("learning-language").addEventListener("change", changeLearningLanguage);
+    applyLearningLanguageAttributes();
     refreshWordList()     
     document.getElementById('load-words-button').onclick = loadCurrentWords;
     document.getElementById('update-words-button').onclick = function() {
