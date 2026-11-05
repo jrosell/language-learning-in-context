@@ -2,7 +2,7 @@
 const learningLanguages = {
     de: { label: "German", menuLabel: "alemany", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
     en: { label: "English", menuLabel: "anglès", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
-    ca: { label: "Catalan", menuLabel: "català", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia!" },
+    ca: { label: "Catalan", menuLabel: "català", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia. Com estàs avui?" },
     vi: { label: "Vietnamese", menuLabel: "vietnamita", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
     zh: { label: "Chinese (Simplified)", menuLabel: "xinès simplificat", locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
     ar: { label: "Arabic", menuLabel: "àrab", locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
@@ -18,6 +18,98 @@ const savedLanguage = localStorage.getItem("learning_language");
 let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "de";
 let hasSelectedLearningLanguage = Boolean(learningLanguages[savedLanguage]);
 let pendingLanguage = currentLanguage;
+const TEXT_DOCUMENTS_STORAGE_KEY = "language_learning_text_documents_v1";
+const OPEN_TEXT_IDS_STORAGE_KEY = "language_learning_open_text_ids_v1";
+const ACTIVE_TEXT_ID_STORAGE_KEY = "language_learning_active_text_id_v1";
+
+function createTextId() {
+    return "text-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function loadTextDocuments() {
+    try {
+        const savedDocuments = JSON.parse(localStorage.getItem(TEXT_DOCUMENTS_STORAGE_KEY));
+        if (Array.isArray(savedDocuments) && savedDocuments.length) {
+            const documents = savedDocuments
+                .filter(document => document && typeof document.content === "string")
+                .map(document => ({
+                    id: String(document.id || createTextId()),
+                    title: String(document.title || "Untitled text"),
+                    content: document.content,
+                    activeSentenceIndex: Number.isInteger(document.activeSentenceIndex)
+                        ? Math.max(0, document.activeSentenceIndex)
+                        : 0,
+                    isStarter: Boolean(document.isStarter)
+                }));
+            if (documents.length) return documents;
+        }
+    } catch (error) {
+        console.warn("Could not read saved texts.", error);
+    }
+
+    return [{
+        id: createTextId(),
+        title: "Welcome",
+        content: learningLanguages[currentLanguage].sample,
+        activeSentenceIndex: 0,
+        isStarter: true
+    }];
+}
+
+function loadOpenTextIds(documents) {
+    try {
+        const savedIds = localStorage.getItem(OPEN_TEXT_IDS_STORAGE_KEY);
+        if (savedIds !== null) {
+            const ids = JSON.parse(savedIds);
+            if (Array.isArray(ids)) {
+                const availableIds = new Set(documents.map(document => document.id));
+                return ids.filter(id => availableIds.has(id));
+            }
+        }
+    } catch (error) {
+        console.warn("Could not read open text tabs.", error);
+    }
+    return documents.length ? [documents[0].id] : [];
+}
+
+let textDocuments = loadTextDocuments();
+let openTextIds = loadOpenTextIds(textDocuments);
+let activeTextId = localStorage.getItem(ACTIVE_TEXT_ID_STORAGE_KEY);
+if (!openTextIds.includes(activeTextId)) activeTextId = openTextIds[0] || null;
+let sentencePlaybackMode = false;
+let editingTextId = null;
+
+function hasUnsavedTextEditorChanges() {
+    const editor = document.getElementById("text-editor");
+    if (editor.hidden) return false;
+    const title = document.getElementById("text-title-input").value.trim();
+    const content = document.getElementById("text-input").value.trim();
+    if (!editingTextId) return Boolean(title || content);
+    const textDocument = textDocuments.find(document => document.id === editingTextId);
+    return Boolean(textDocument && (title !== textDocument.title || content !== textDocument.content));
+}
+
+function confirmDiscardTextEditorChanges() {
+    return !hasUnsavedTextEditorChanges() || window.confirm("Discard unsaved text changes?");
+}
+
+function getActiveTextDocument() {
+    return textDocuments.find(document => document.id === activeTextId) || null;
+}
+
+function saveTextWorkspace() {
+    try {
+        localStorage.setItem(TEXT_DOCUMENTS_STORAGE_KEY, JSON.stringify(textDocuments));
+        localStorage.setItem(OPEN_TEXT_IDS_STORAGE_KEY, JSON.stringify(openTextIds));
+        if (activeTextId) {
+            localStorage.setItem(ACTIVE_TEXT_ID_STORAGE_KEY, activeTextId);
+        } else {
+            localStorage.removeItem(ACTIVE_TEXT_ID_STORAGE_KEY);
+        }
+    } catch (error) {
+        console.warn("Could not save texts in this browser.", error);
+    }
+}
 
 function getVocabularyStorageKey(languageCode = currentLanguage) {
     return languageCode === "de" ? "words_customWords" : "words_customWords_" + languageCode;
@@ -131,7 +223,7 @@ function makeWordsClickable(text) {
 
 function applyLearningLanguageAttributes() {
     const language = learningLanguages[currentLanguage];
-    ["text", "text-input", "word-title", "definition", "examples"].forEach(id => {
+    ["text", "text-input", "text-title-input", "active-text-title", "word-title", "definition", "examples"].forEach(id => {
         const element = document.getElementById(id);
         if (element) {
             element.lang = language.locale;
@@ -222,6 +314,7 @@ function resetLanguagePickerSearch() {
 }
 
 function openLearningLanguageSettings() {
+    stopTextPlayback();
     const firstRun = !hasSelectedLearningLanguage;
     pendingLanguage = currentLanguage;
     syncLearningLanguageSelection();
@@ -247,12 +340,12 @@ function cancelLearningLanguageChange() {
 function saveLearningLanguage() {
     const nextLanguage = pendingLanguage;
     if (!learningLanguages[nextLanguage]) return;
+    stopTextPlayback();
 
-    const textElement = document.getElementById("text");
-    const textInput = document.getElementById("text-input");
     const oldSample = learningLanguages[currentLanguage].sample;
-    const textWasSample = textElement.innerText.trim() === oldSample;
-    const inputWasSample = textInput.value.trim() === oldSample;
+    const untouchedWelcomeText = textDocuments.find(document =>
+        document.isStarter && document.content.trim() === oldSample
+    );
 
     currentLanguage = nextLanguage;
     pendingLanguage = currentLanguage;
@@ -262,8 +355,8 @@ function saveLearningLanguage() {
     ensureGermanStarterWord();
 
     const newSample = learningLanguages[currentLanguage].sample;
-    if (textWasSample) textElement.textContent = newSample;
-    if (inputWasSample) textInput.value = newSample;
+    if (untouchedWelcomeText) untouchedWelcomeText.content = newSample;
+    saveTextWorkspace();
 
     resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
@@ -280,19 +373,318 @@ function saveLearningLanguage() {
 
 ensureGermanStarterWord();
 
-function refreshWordList() {
-    document.getElementById('text').innerHTML = makeWordsClickable(document.getElementById('text').innerText);
-    document.querySelectorAll('.word').forEach(word => {
-        word.addEventListener('click', function () {
-            showDefinition(this.innerText);
-            const copyPasteContainer = document.querySelector('.words-container');
-            copyPasteContainer.style.display = 'none';
-            const aboutContainer = document.querySelector('.about-container');  
-            aboutContainer.style.display = 'none';
-            const textContainer = document.querySelector('.text-container');  
-            textContainer.style.display = 'none';
-        });
+function splitTextIntoSentences(text) {
+    let rawSegments = [];
+    if (typeof Intl !== "undefined" && typeof Intl.Segmenter === "function") {
+        try {
+            const segmenter = new Intl.Segmenter(learningLanguages[currentLanguage].locale, { granularity: "sentence" });
+            rawSegments = Array.from(segmenter.segment(text), item => item.segment);
+        } catch (error) {
+            console.warn("Sentence segmentation is unavailable; using the fallback splitter.", error);
+        }
+    }
+
+    if (!rawSegments.length && text.trim()) {
+        rawSegments = text.match(/[^.!?。！？]+[.!?。！？]*\s*/g) || [text];
+    }
+
+    return rawSegments.map(segment => {
+        const leading = (segment.match(/^\s*/) || [""])[0];
+        const trailing = (segment.match(/\s*$/) || [""])[0];
+        const end = segment.length - trailing.length;
+        return { leading, text: segment.slice(leading.length, end), trailing };
+    }).filter(segment => segment.text.trim());
+}
+
+function getTextTitle(content) {
+    const firstSentence = splitTextIntoSentences(content)[0];
+    const title = firstSentence ? firstSentence.text.trim() : "Untitled text";
+    return title.length > 60 ? title.slice(0, 57).trimEnd() + "…" : title;
+}
+
+function renderTextTabs() {
+    const tabs = document.getElementById("text-tabs");
+    tabs.textContent = "";
+
+    openTextIds.forEach(id => {
+        const textDocument = textDocuments.find(document => document.id === id);
+        if (!textDocument) return;
+
+        const tab = document.createElement("div");
+        tab.className = "text-tab";
+        const selectButton = document.createElement("button");
+        selectButton.type = "button";
+        selectButton.className = "text-tab__select";
+        selectButton.setAttribute("role", "tab");
+        selectButton.setAttribute("aria-selected", String(id === activeTextId));
+        selectButton.setAttribute("aria-controls", "text");
+        selectButton.textContent = textDocument.title;
+        selectButton.title = textDocument.title;
+        selectButton.addEventListener("click", () => openTextDocument(id));
+
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        closeButton.className = "text-tab__close";
+        closeButton.setAttribute("aria-label", "Close " + textDocument.title);
+        closeButton.textContent = "×";
+        closeButton.addEventListener("click", () => closeTextDocument(id));
+
+        tab.append(selectButton, closeButton);
+        tabs.appendChild(tab);
     });
+}
+
+function renderTextDocument() {
+    const textElement = document.getElementById("text");
+    const titleElement = document.getElementById("active-text-title");
+    const textDocument = getActiveTextDocument();
+    const language = learningLanguages[currentLanguage];
+    textElement.textContent = "";
+    textElement.lang = language.locale;
+    textElement.dir = language.direction;
+    titleElement.lang = language.locale;
+    titleElement.dir = language.direction;
+
+    if (!textDocument) {
+        titleElement.textContent = "";
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-text-message";
+        emptyMessage.textContent = "No text is open. Choose Change or + to open a saved text or add one.";
+        textElement.appendChild(emptyMessage);
+        return;
+    }
+
+    titleElement.textContent = textDocument.title;
+    const sentences = splitTextIntoSentences(textDocument.content);
+    if (!sentences.length) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-text-message";
+        emptyMessage.textContent = "This text is empty. Choose Change to edit it.";
+        textElement.appendChild(emptyMessage);
+        return;
+    }
+
+    textDocument.activeSentenceIndex = Math.min(textDocument.activeSentenceIndex, sentences.length - 1);
+    sentences.forEach((sentence, index) => {
+        if (sentence.leading) textElement.appendChild(document.createTextNode(sentence.leading));
+
+        const sentenceElement = document.createElement("span");
+        sentenceElement.className = "text-sentence";
+        sentenceElement.dataset.sentenceIndex = String(index);
+        sentenceElement.tabIndex = 0;
+        sentenceElement.setAttribute("role", "group");
+        sentenceElement.setAttribute("aria-label", "Sentence " + (index + 1));
+        sentenceElement.setAttribute("aria-current", String(index === textDocument.activeSentenceIndex));
+        if (index === textDocument.activeSentenceIndex) sentenceElement.classList.add("is-active");
+
+        const sentenceText = document.createElement("span");
+        sentenceText.className = "text-sentence__content";
+        sentenceText.innerHTML = makeWordsClickable(sentence.text);
+
+        const controls = document.createElement("span");
+        controls.className = "sentence-controls";
+        controls.hidden = index !== textDocument.activeSentenceIndex;
+
+        const playButton = document.createElement("button");
+        playButton.type = "button";
+        playButton.className = "sentence-controls__play";
+        playButton.dataset.sentenceAction = "play";
+        playButton.setAttribute("aria-label", sentencePlaybackMode
+            ? "Play the active sentence"
+            : "Play from the active sentence through the rest of the text");
+        playButton.textContent = "▶ Play";
+
+        const sentenceModeButton = document.createElement("button");
+        sentenceModeButton.type = "button";
+        sentenceModeButton.className = "sentence-controls__repeat";
+        sentenceModeButton.dataset.sentenceAction = "sentence-mode";
+        sentenceModeButton.setAttribute("aria-label", "Toggle sentence mode");
+        sentenceModeButton.setAttribute("aria-pressed", String(sentencePlaybackMode));
+        sentenceModeButton.title = sentencePlaybackMode
+            ? "Sentence mode on: Play only the active sentence"
+            : "Sentence mode off: Play the full text";
+        sentenceModeButton.textContent = "↻";
+        sentenceModeButton.classList.toggle("is-selected", sentencePlaybackMode);
+
+        const stopButton = document.createElement("button");
+        stopButton.type = "button";
+        stopButton.className = "sentence-controls__stop";
+        stopButton.dataset.sentenceAction = "stop";
+        stopButton.setAttribute("aria-label", "Stop playback");
+        stopButton.textContent = "■ Stop";
+
+        controls.append(playButton, sentenceModeButton, stopButton);
+        sentenceElement.append(sentenceText, controls);
+        textElement.appendChild(sentenceElement);
+        if (sentence.trailing) textElement.appendChild(document.createTextNode(sentence.trailing));
+    });
+}
+
+function renderSavedTextList() {
+    const list = document.getElementById("saved-text-list");
+    list.textContent = "";
+
+    textDocuments.slice().reverse().forEach(textDocument => {
+        const item = document.createElement("li");
+        const title = document.createElement("span");
+        title.className = "saved-text-list__title";
+        title.textContent = textDocument.title;
+
+        const actions = document.createElement("div");
+        actions.className = "saved-text-list__actions";
+        const openButton = document.createElement("button");
+        openButton.type = "button";
+        openButton.textContent = openTextIds.includes(textDocument.id) ? "Switch" : "Open";
+        openButton.addEventListener("click", () => openTextDocument(textDocument.id));
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => editTextDocument(textDocument.id));
+
+        actions.append(openButton, editButton);
+        item.append(title, actions);
+        list.appendChild(item);
+    });
+}
+
+function openTextManager() {
+    stopTextPlayback();
+    document.getElementById("options-menu").open = false;
+    document.querySelector(".text-container").style.display = "block";
+    document.querySelector(".words-container").style.display = "none";
+    document.querySelector(".about-container").style.display = "none";
+    document.querySelector(".definition-box").style.display = "none";
+    setTextActionState("change");
+    renderSavedTextList();
+}
+
+function startNewTextEditor() {
+    if (!confirmDiscardTextEditorChanges()) return;
+    editingTextId = null;
+    document.getElementById("text-editor-error").hidden = true;
+    document.getElementById("text-editor-heading").textContent = "New text";
+    document.getElementById("text-title-input").value = "";
+    document.getElementById("text-input").value = "";
+    document.getElementById("save-text-button").textContent = "Save and open";
+    document.getElementById("text-editor").hidden = false;
+    document.getElementById("text-title-input").focus();
+}
+
+function editTextDocument(id) {
+    if (!confirmDiscardTextEditorChanges()) return;
+    const textDocument = textDocuments.find(document => document.id === id);
+    if (!textDocument) return;
+    editingTextId = id;
+    document.getElementById("text-editor-error").hidden = true;
+    document.getElementById("text-editor-heading").textContent = "Edit text";
+    document.getElementById("text-title-input").value = textDocument.title;
+    document.getElementById("text-input").value = textDocument.content;
+    document.getElementById("save-text-button").textContent = "Save changes";
+    document.getElementById("text-editor").hidden = false;
+    document.getElementById("text-title-input").focus();
+}
+
+function saveTextFromEditor() {
+    const content = document.getElementById("text-input").value.trim();
+    if (!content) {
+        document.getElementById("text-editor-error").hidden = false;
+        document.getElementById("text-input").focus();
+        return;
+    }
+    document.getElementById("text-editor-error").hidden = true;
+
+    const title = document.getElementById("text-title-input").value.trim() || getTextTitle(content);
+    if (editingTextId) {
+        const textDocument = textDocuments.find(document => document.id === editingTextId);
+        if (!textDocument) return;
+        const contentChanged = textDocument.content !== content;
+        textDocument.title = title;
+        textDocument.content = content;
+        textDocument.isStarter = false;
+        if (contentChanged) textDocument.activeSentenceIndex = 0;
+        if (textDocument.id === activeTextId) renderTextDocument();
+        saveTextWorkspace();
+        renderTextTabs();
+        renderSavedTextList();
+        document.getElementById("text-editor").hidden = true;
+        return;
+    }
+
+    const textDocument = {
+        id: createTextId(),
+        title,
+        content,
+        activeSentenceIndex: 0,
+        isStarter: false
+    };
+    textDocuments.push(textDocument);
+    document.getElementById("text-editor").hidden = true;
+    openTextDocument(textDocument.id);
+}
+
+function openTextDocument(id) {
+    if (!confirmDiscardTextEditorChanges()) return;
+    const textDocument = textDocuments.find(document => document.id === id);
+    if (!textDocument) return;
+    stopTextPlayback();
+    if (!openTextIds.includes(id)) openTextIds.push(id);
+    activeTextId = id;
+    saveTextWorkspace();
+    renderTextTabs();
+    renderTextDocument();
+    document.getElementById("text-editor").hidden = true;
+    showReadView();
+}
+
+function closeTextDocument(id) {
+    const index = openTextIds.indexOf(id);
+    if (index < 0) return;
+    stopTextPlayback();
+    openTextIds.splice(index, 1);
+    if (activeTextId === id) activeTextId = openTextIds[Math.min(index, openTextIds.length - 1)] || null;
+    saveTextWorkspace();
+    renderTextTabs();
+    renderTextDocument();
+}
+
+function setActiveSentence(index) {
+    const textDocument = getActiveTextDocument();
+    if (!textDocument) return;
+    const sentences = splitTextIntoSentences(textDocument.content);
+    if (!sentences.length) return;
+    textDocument.activeSentenceIndex = Math.max(0, Math.min(index, sentences.length - 1));
+    saveTextWorkspace();
+    renderTextDocument();
+}
+
+function stopTextPlayback() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+
+function playText() {
+    const textDocument = getActiveTextDocument();
+    if (!textDocument || !("speechSynthesis" in window)) return;
+
+    const sentences = splitTextIntoSentences(textDocument.content);
+    if (!sentences.length) return;
+    const startIndex = textDocument.activeSentenceIndex;
+    const sequence = sentencePlaybackMode
+        ? [sentences[startIndex]]
+        : sentences.slice(startIndex);
+
+    stopTextPlayback();
+    sequence.forEach((sentence, offset) => {
+        const utterance = new SpeechSynthesisUtterance(sentence.text.trim());
+        utterance.lang = learningLanguages[currentLanguage].locale;
+        utterance.onstart = () => setActiveSentence(startIndex + offset);
+        window.speechSynthesis.speak(utterance);
+    });
+}
+
+function refreshWordList() {
+    renderTextTabs();
+    renderTextDocument();
 }
 
 function showDefinition(wordText) {
@@ -677,14 +1069,6 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([ab], { type: mimeString }); // Create a blob
 }
-function playText(){
-    if ('speechSynthesis' in window) {
-        var msg = new SpeechSynthesisUtterance(document.querySelector("#text").innerText);                
-        msg.lang = learningLanguages[currentLanguage].locale;
-        speechSynthesis.speak(msg);
-    }
-}
-
 function initialize() {
     document.getElementById('load-words-button').onclick = loadCurrentWords;
     document.getElementById('update-words-button').onclick = function() {
@@ -719,25 +1103,62 @@ function initialize() {
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'none';
     };    
-    document.getElementById('toggle-text').onclick = function() {
-        setTextActionState("change");
-        const textContainer = document.querySelector('.text-container');
-        textContainer.style.display = 'block';
-        const copyPasteContainer = document.querySelector('.words-container');    
-        copyPasteContainer.style.display = 'none';
-        const aboutContainer = document.querySelector('.about-container');  
-        aboutContainer.style.display = 'none';
-        const definitionBox = document.querySelector('.definition-box');
-        definitionBox.style.display = 'none';
-        const textElement = document.getElementById('text');
-        document.getElementById('text-input').value = textElement.textContent;
+    document.getElementById('toggle-text').onclick = openTextManager;
+    document.getElementById('toggle-text-about').onclick = function(event) {
+        event.preventDefault();
+        openTextManager();
     };
-    document.getElementById('update-text-button').onclick = function() {
-        const newText = document.getElementById('text-input').value;
-        document.getElementById('text').textContent = newText; // Update the displayed text
-        loadCurrentWords()
-        refreshWordList()
+    document.getElementById('new-text-button').onclick = startNewTextEditor;
+    document.getElementById('add-text-tab').onclick = function() {
+        openTextManager();
+        startNewTextEditor();
     };
+    document.getElementById('save-text-button').onclick = saveTextFromEditor;
+    document.getElementById('text-input').addEventListener('input', function() {
+        document.getElementById('text-editor-error').hidden = true;
+    });
+    document.getElementById('cancel-text-edit').onclick = function() {
+        if (!confirmDiscardTextEditorChanges()) return;
+        document.getElementById('text-editor').hidden = true;
+        editingTextId = null;
+    };
+    document.getElementById('text').addEventListener('click', function(event) {
+        const sentence = event.target.closest('.text-sentence');
+        const actionButton = event.target.closest('[data-sentence-action]');
+        if (actionButton) {
+            const sentenceIndex = Number(actionButton.closest('.text-sentence').dataset.sentenceIndex);
+            if (actionButton.dataset.sentenceAction === 'play') {
+                setActiveSentence(sentenceIndex);
+                playText();
+            } else if (actionButton.dataset.sentenceAction === 'sentence-mode') {
+                stopTextPlayback();
+                sentencePlaybackMode = !sentencePlaybackMode;
+                renderTextDocument();
+            } else if (actionButton.dataset.sentenceAction === 'stop') {
+                stopTextPlayback();
+            }
+            return;
+        }
+
+        if (!sentence) return;
+        const word = event.target.closest('.word');
+        const wordText = word ? word.innerText : "";
+        stopTextPlayback();
+        setActiveSentence(Number(sentence.dataset.sentenceIndex));
+        if (!word) return;
+
+        showDefinition(wordText);
+        document.querySelector('.words-container').style.display = 'none';
+        document.querySelector('.about-container').style.display = 'none';
+        document.querySelector('.text-container').style.display = 'none';
+    });
+    document.getElementById('text').addEventListener('keydown', function(event) {
+        const sentence = event.target.closest('.text-sentence');
+        if (!sentence || event.target !== sentence || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        stopTextPlayback();
+        setActiveSentence(Number(sentence.dataset.sentenceIndex));
+    });
     document.getElementById('upload-link').onclick = function(event) {
         event.preventDefault(); 
         document.getElementById('csv-upload').click();
@@ -749,13 +1170,8 @@ function initialize() {
     document.getElementById("open-language-settings").onclick = openLearningLanguageSettings;
     document.getElementById("save-learning-language").onclick = saveLearningLanguage;
     document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
-    document.getElementById('toggle-play').onclick = playText
     renderLearningLanguageOptions();
     showReadView();
-    const textElement = document.getElementById("text");
-    if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
-        textElement.textContent = learningLanguages[currentLanguage].sample;
-    }
     const firstRun = !hasSelectedLearningLanguage;
     document.getElementById("language-picker").hidden = !firstRun;
     document.getElementById("open-language-settings").setAttribute("aria-expanded", String(firstRun));
@@ -764,9 +1180,11 @@ function initialize() {
     document.getElementById("cancel-learning-language").hidden = firstRun;
     updateLanguageMenuLabel();
     applyLearningLanguageAttributes();
-    refreshWordList()     
+    refreshWordList();
+    renderSavedTextList();
 
 }
 
 initialize();
+
 
