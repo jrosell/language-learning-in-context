@@ -1,17 +1,17 @@
 
 const learningLanguages = {
-    de: { label: "German", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
-    en: { label: "English", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
-    ca: { label: "Catalan", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia!" },
-    vi: { label: "Vietnamese", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
-    zh: { label: "Chinese (Simplified)", locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
-    ar: { label: "Arabic", locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
-    ur: { label: "Urdu", locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
-    ru: { label: "Russian", locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
-    hi: { label: "Hindi", locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
-    fr: { label: "French", locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
-    es: { label: "Spanish", locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
-    fil: { label: "Filipino", locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
+    de: { label: "German", menuLabel: "alemany", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
+    en: { label: "English", menuLabel: "anglès", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
+    ca: { label: "Catalan", menuLabel: "català", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia!" },
+    vi: { label: "Vietnamese", menuLabel: "vietnamita", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
+    zh: { label: "Chinese (Simplified)", menuLabel: "xinès simplificat", locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
+    ar: { label: "Arabic", menuLabel: "àrab", locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
+    ur: { label: "Urdu", menuLabel: "urdú", locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
+    ru: { label: "Russian", menuLabel: "rus", locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
+    hi: { label: "Hindi", menuLabel: "hindi", locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
+    fr: { label: "French", menuLabel: "francès", locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
+    es: { label: "Spanish", menuLabel: "castellà", locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
+    fil: { label: "Filipino", menuLabel: "filipí", locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
 };
 
 const savedLanguage = localStorage.getItem("learning_language");
@@ -142,7 +142,7 @@ function applyLearningLanguageAttributes() {
 
 function updateLanguageMenuLabel() {
     document.getElementById("open-language-settings").textContent =
-        "Learning language: " + learningLanguages[currentLanguage].label;
+        "Aprenc " + learningLanguages[currentLanguage].menuLabel;
 }
 
 function normalizeLanguageSearch(value) {
@@ -232,6 +232,7 @@ function openLearningLanguageSettings() {
         firstRun ? "Start learning" : "Save language";
     document.getElementById("cancel-learning-language").hidden = firstRun;
     document.getElementById("language-picker").hidden = false;
+    document.getElementById("open-language-settings").setAttribute("aria-expanded", "true");
     document.getElementById("options-menu").open = false;
 }
 
@@ -240,6 +241,7 @@ function cancelLearningLanguageChange() {
     syncLearningLanguageSelection();
     resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
+    document.getElementById("open-language-settings").setAttribute("aria-expanded", "false");
 }
 
 function saveLearningLanguage() {
@@ -265,6 +267,7 @@ function saveLearningLanguage() {
 
     resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
+    document.getElementById("open-language-settings").setAttribute("aria-expanded", "false");
     document.getElementById("definition-box").style.display = "none";
     applyLearningLanguageAttributes();
     refreshWordList();
@@ -691,6 +694,7 @@ function initialize() {
     }
     const firstRun = !hasSelectedLearningLanguage;
     document.getElementById("language-picker").hidden = !firstRun;
+    document.getElementById("open-language-settings").setAttribute("aria-expanded", String(firstRun));
     document.getElementById("save-learning-language").textContent =
         firstRun ? "Start learning" : "Save language";
     document.getElementById("cancel-learning-language").hidden = firstRun;
