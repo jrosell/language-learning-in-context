@@ -283,23 +283,12 @@ function applyLearningLanguageSearch() {
     document.getElementById("language-search-empty").hidden = visibleCount > 0;
 }
 
-function setTextActionState(mode) {
-    const readButton = document.getElementById("toggle-read");
-    const changeButton = document.getElementById("toggle-text");
-
-    readButton.setAttribute("aria-pressed", String(mode === "read"));
-    changeButton.setAttribute("aria-pressed", String(mode === "change"));
-    readButton.classList.toggle("is-selected", mode === "read");
-    changeButton.classList.toggle("is-selected", mode === "change");
-}
-
 function showReadView() {
     document.getElementById("options-menu").open = false;
     [".about-container", ".text-container", ".words-container", ".definition-box"].forEach(selector => {
         const panel = document.querySelector(selector);
         if (panel) panel.style.display = "none";
     });
-    setTextActionState("read");
 }
 
 function syncLearningLanguageSelection() {
@@ -449,7 +438,7 @@ function renderTextDocument() {
         titleElement.textContent = "";
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "empty-text-message";
-        emptyMessage.textContent = "No text is open. Choose Change or + to open a saved text or add one.";
+        emptyMessage.textContent = "No text is open. Choose + to open a saved text or add one.";
         textElement.appendChild(emptyMessage);
         return;
     }
@@ -459,17 +448,18 @@ function renderTextDocument() {
     if (!sentences.length) {
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "empty-text-message";
-        emptyMessage.textContent = "This text is empty. Choose Change to edit it.";
+        emptyMessage.textContent = "This text is empty. Choose + to open the text manager.";
         textElement.appendChild(emptyMessage);
         return;
     }
 
     textDocument.activeSentenceIndex = Math.min(textDocument.activeSentenceIndex, sentences.length - 1);
     sentences.forEach((sentence, index) => {
-        if (sentence.leading) textElement.appendChild(document.createTextNode(sentence.leading));
-
-        const sentenceElement = document.createElement("span");
+        const sentenceElement = document.createElement("div");
         sentenceElement.className = "text-sentence";
+        if (index > 0 && /\r?\n\s*\r?\n/.test(sentence.leading)) {
+            sentenceElement.classList.add("text-sentence--paragraph-start");
+        }
         sentenceElement.dataset.sentenceIndex = String(index);
         sentenceElement.tabIndex = 0;
         sentenceElement.setAttribute("role", "group");
@@ -483,7 +473,9 @@ function renderTextDocument() {
 
         const controls = document.createElement("span");
         controls.className = "sentence-controls";
-        controls.hidden = index !== textDocument.activeSentenceIndex;
+        const isActiveSentence = index === textDocument.activeSentenceIndex;
+        controls.setAttribute("aria-hidden", String(!isActiveSentence));
+        controls.inert = !isActiveSentence;
 
         const playButton = document.createElement("button");
         playButton.type = "button";
@@ -516,7 +508,6 @@ function renderTextDocument() {
         controls.append(playButton, sentenceModeButton, stopButton);
         sentenceElement.append(sentenceText, controls);
         textElement.appendChild(sentenceElement);
-        if (sentence.trailing) textElement.appendChild(document.createTextNode(sentence.trailing));
     });
 }
 
@@ -543,9 +534,38 @@ function renderSavedTextList() {
         editButton.addEventListener("click", () => editTextDocument(textDocument.id));
 
         actions.append(openButton, editButton);
+        if (!textDocument.isStarter) {
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "saved-text-list__delete";
+            deleteButton.textContent = "Delete";
+            deleteButton.setAttribute("aria-label", "Delete " + textDocument.title);
+            deleteButton.addEventListener("click", () => deleteTextDocument(textDocument.id));
+            actions.appendChild(deleteButton);
+        }
         item.append(title, actions);
         list.appendChild(item);
     });
+}
+
+function deleteTextDocument(id) {
+    const textDocument = textDocuments.find(document => document.id === id);
+    if (!textDocument || textDocument.isStarter) return;
+    if (editingTextId === id && !confirmDiscardTextEditorChanges()) return;
+    if (!window.confirm('Delete "' + textDocument.title + '"? This cannot be undone.')) return;
+
+    stopTextPlayback();
+    textDocuments = textDocuments.filter(document => document.id !== id);
+    openTextIds = openTextIds.filter(openId => openId !== id);
+    if (activeTextId === id) activeTextId = openTextIds[0] || null;
+    if (editingTextId === id) {
+        editingTextId = null;
+        document.getElementById("text-editor").hidden = true;
+    }
+    saveTextWorkspace();
+    renderTextTabs();
+    renderTextDocument();
+    renderSavedTextList();
 }
 
 function openTextManager() {
@@ -555,8 +575,14 @@ function openTextManager() {
     document.querySelector(".words-container").style.display = "none";
     document.querySelector(".about-container").style.display = "none";
     document.querySelector(".definition-box").style.display = "none";
-    setTextActionState("change");
     renderSavedTextList();
+}
+
+function closeTextManager() {
+    if (!confirmDiscardTextEditorChanges()) return;
+    document.getElementById("text-editor").hidden = true;
+    editingTextId = null;
+    showReadView();
 }
 
 function startNewTextEditor() {
@@ -601,7 +627,6 @@ function saveTextFromEditor() {
         const contentChanged = textDocument.content !== content;
         textDocument.title = title;
         textDocument.content = content;
-        textDocument.isStarter = false;
         if (contentChanged) textDocument.activeSentenceIndex = 0;
         if (textDocument.id === activeTextId) renderTextDocument();
         saveTextWorkspace();
@@ -1080,7 +1105,6 @@ function initialize() {
     document.getElementById('edit-definition-button').onclick = toggleEditDefinition;   
     document.getElementById('toggle-words').onclick = function() {
        document.getElementById("options-menu").open = false;
-       setTextActionState(null);
        const copyPasteContainer = document.querySelector('.words-container');    
        copyPasteContainer.style.display = 'block';
        const aboutContainer = document.querySelector('.about-container');  
@@ -1093,7 +1117,6 @@ function initialize() {
     };
     document.getElementById('toggle-about').onclick = function() {
         document.getElementById("options-menu").open = false;
-        setTextActionState(null);
         const aboutContainer = document.querySelector('.about-container');
         aboutContainer.style.display = 'block';
         const copyPasteContainer = document.querySelector('.words-container');    
@@ -1103,15 +1126,10 @@ function initialize() {
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'none';
     };    
-    document.getElementById('toggle-text').onclick = openTextManager;
-    document.getElementById('toggle-text-about').onclick = function(event) {
-        event.preventDefault();
-        openTextManager();
-    };
+    document.getElementById('close-text-manager').onclick = closeTextManager;
     document.getElementById('new-text-button').onclick = startNewTextEditor;
     document.getElementById('add-text-tab').onclick = function() {
         openTextManager();
-        startNewTextEditor();
     };
     document.getElementById('save-text-button').onclick = saveTextFromEditor;
     document.getElementById('text-input').addEventListener('input', function() {
@@ -1166,7 +1184,6 @@ function initialize() {
     document.getElementById('csv-upload').addEventListener('change', handleCSVUpload);
 
     document.getElementById("learning-language-search").addEventListener("input", applyLearningLanguageSearch);
-    document.getElementById("toggle-read").onclick = showReadView;
     document.getElementById("open-language-settings").onclick = openLearningLanguageSettings;
     document.getElementById("save-learning-language").onclick = saveLearningLanguage;
     document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
