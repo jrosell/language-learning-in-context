@@ -3,107 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language learning in context</title>
+    <title data-i18n="appTitle">Language learning in context</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>     
 <div class="content-container">    
     <div class="main-content"> 
 <div class="app-controls">
-            <nav class="utility-actions" aria-label="App navigation">
-                <button type="button" id="open-language-settings" class="utility-action utility-action--language" aria-controls="language-picker" aria-expanded="false"><span id="language-menu-label">Aprenc alemany</span><svg class="language-menu__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></button>
-                <button type="button" id="toggle-words" class="utility-action">Vocabulary</button>
-                <button type="button" id="toggle-about" class="utility-action">About</button>
+            <nav class="utility-actions" aria-label="App navigation" data-i18n-aria-label="navLabel">
+                <button type="button" id="open-language-settings" class="utility-action utility-action--language" aria-controls="language-picker" aria-expanded="false"><span id="language-menu-label">Learning English</span><svg class="language-menu__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></button>
+                <button type="button" id="toggle-words" class="utility-action" data-i18n="vocabulary">Vocabulary</button>
+                <button type="button" id="toggle-about" class="utility-action" data-i18n="about">About</button>
             </nav>
         </div>
         <div id="language-picker" class="language-picker" hidden>
-            <h2 id="language-picker-heading">Choose your learning language</h2>
+            <h2 id="language-picker-heading" data-i18n="chooseLanguage">Choose your learning language</h2>
             <div class="language-picker__search">
-            <label for="learning-language-search">Search languages</label>
-            <input type="search" id="learning-language-search" autocomplete="off" placeholder="Type a language name" aria-controls="learning-language-options">
+            <label for="learning-language-search" data-i18n="searchLanguages">Search languages</label>
+            <input type="search" id="learning-language-search" autocomplete="off" placeholder="Type a language name" data-i18n-placeholder="searchPlaceholder" aria-controls="learning-language-options">
         </div>
-        <fieldset id="learning-language-options" class="language-picker__list" aria-label="Available learning languages"></fieldset>
-        <p id="language-search-empty" class="language-picker__empty" role="status" aria-live="polite" hidden>No languages match your search.</p>
+        <fieldset id="learning-language-options" class="language-picker__list" aria-label="Available learning languages" data-i18n-aria-label="availableLanguages"></fieldset>
+        <p id="language-search-empty" class="language-picker__empty" role="status" aria-live="polite" hidden data-i18n="noLanguageMatch">No languages match your search.</p>
             <div class="language-picker__actions">
-                <button type="button" id="save-learning-language">Start learning</button>
-                <button type="button" id="cancel-learning-language" hidden>Cancel</button>
+                <button type="button" id="save-learning-language" data-i18n="startLearning">Start learning</button>
+                <button type="button" id="cancel-learning-language" hidden data-i18n="cancel">Cancel</button>
             </div>
         </div>
-        <div class="text-workspace" aria-label="Open texts">
-            <div id="text-tabs" class="text-tabs" role="tablist" aria-label="Open texts"></div>
-            <button type="button" id="add-text-tab" class="text-tab-add" aria-label="Add or open a text" title="Add or open a text">+</button>
+        <div class="text-workspace" aria-label="Open texts" data-i18n-aria-label="openTexts">
+            <div id="text-tabs" class="text-tabs" role="tablist" aria-label="Open texts" data-i18n-aria-label="openTexts"></div>
+            <button type="button" id="add-text-tab" class="text-tab-add" aria-label="Add or open a text" title="Add or open a text" data-i18n-aria-label="addOrOpenText" data-i18n-title="addOrOpenText">+</button>
         </div>
         <h1 id="active-text-title" class="active-text-title"></h1>
-        <div id="text" aria-label="Text content"></div>
+        <div id="text" aria-label="Text" data-i18n-aria-label="text"></div>
     </div>
     <div class="sidebar">
         <div class="about-container">
-            <h1>About</h1>
-            <h2>Language learning in context</h2>
-            <p>Hello! I'm Jordi Rosell. I created this app to help language learners acquire vocabulary in context.</p>
+            <h1 data-i18n="aboutTitle">About</h1>
+            <h2 data-i18n="aboutSubtitle">Language learning in context</h2>
+            <p data-i18n="aboutIntro">Hello! I'm Jordi Rosell. I created this app to help language learners acquire vocabulary in context.</p>
 
-            <p>Choose your learning language the first time you use the app. You can change it later using the learning-language control in the top bar. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
-            <p>As a learner, you can:</p><ul>
-                <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
-                <li>Use the <strong>+</strong> button to open saved texts, add one by pasting, or edit it.</li>
-                <li>Edit, download, or upload  <a href="#" id="toggle-words-about">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
+            <p data-i18n="aboutLanguageInfo">Choose a learning language the first time you use the app. You can change it later from the top bar. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish, and Filipino.</p>
+            <p data-i18n="aboutLearnerLead">As a learner, you can:</p><ul>
+                <li data-i18n="aboutWordItem">Select a word to see or edit its meaning, learning status, and examples.</li>
+                <li data-i18n="aboutTextItem">Use + to open saved texts, paste a new text, or edit one.</li>
+                <li><span data-i18n="aboutVocabPrefix">Manage your word list using CSV: </span><a href="#" id="toggle-words-about" data-i18n="aboutVocabLink">Vocabulary</a><span data-i18n="aboutVocabSuffix"> lets you copy, upload, edit, or download it.</span>
             </ul>
 
-            <p>Known issues:</p><ul></l>
-                <li>Texts, vocabulary, and images are saved in this browser. They are not shared across devices.</li>
-                <li>This app uses a consent manager to track only users who have agreed to analytics tracking (aka. Google Analytics).</li>
-                <li>Examples (still) not work for mulitple words.</li>
-                <li>You (still) cannot upload/donlowad images for your examples. Examples (still) not work for mulitple words.</li>
+            <p data-i18n="aboutKnownIssues">Known issues:</p><ul>
+                <li data-i18n="aboutLocalData">Texts, vocabulary, and images are saved in this browser and are not shared across devices.</li>
+                <li data-i18n="aboutAnalytics">Analytics are collected only if you agree to tracking.</li>
+                <li data-i18n="aboutMultipleWords">Examples for multiple words are not supported yet.</li>
+                <li data-i18n="aboutImages">Example images cannot be uploaded or downloaded yet.</li>
             </ul>
-            <p>Let me know what you think. And if you want, you can <a href="https://github.com/jrosell/language-learning-in-context/">contribute or open an issue</a>.</p>
-            <p>I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
+            <p><span data-i18n="aboutFeedback">Send feedback or contribute on </span><a href="https://github.com/jrosell/language-learning-in-context/">GitHub</a>.</p>
+            <p><span data-i18n="aboutClosing">I hope you enjoy it!</span><br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
         <div class="text-container" style="display:none;">
             <div class="text-container__header">
-                <h1>Texts</h1>
-                <button type="button" id="close-text-manager" class="panel-close" aria-label="Close text manager" title="Close">×</button>
+                <h1 data-i18n="textsTitle">Texts</h1>
+                <button type="button" id="close-text-manager" class="panel-close" aria-label="Close text manager" title="Close" data-i18n-aria-label="closeTextManager" data-i18n-title="closeTextManager">×</button>
             </div>
-            <p>Open a saved text, or create one by pasting or typing it below.</p>
-            <button type="button" id="new-text-button" class="edit-button">New text</button>
-            <ul id="saved-text-list" class="saved-text-list" aria-label="Saved texts"></ul>
+            <p data-i18n="textManagerIntro">Open a saved text, or create one by pasting or typing it below.</p>
+            <button type="button" id="new-text-button" class="edit-button" data-i18n="newText">New text</button>
+            <ul id="saved-text-list" class="saved-text-list" aria-label="Open texts" data-i18n-aria-label="openTexts"></ul>
             <section id="text-editor" class="text-editor" hidden>
-                <h2 id="text-editor-heading">New text</h2>
-                <label for="text-title-input">Title</label>
+                <h2 id="text-editor-heading" data-i18n="newText">New text</h2>
+                <label for="text-title-input" data-i18n="title">Title</label>
                 <input id="text-title-input" class="text-title-input" type="text" maxlength="100" autocomplete="off">
-                <label for="text-input">Text</label>
+                <label for="text-input" data-i18n="text">Text</label>
                 <textarea id="text-input" class="text-area" rows="12" cols="40" aria-required="true"></textarea>
-                <p id="text-editor-error" class="text-editor__error" role="status" hidden>Enter some text before saving.</p>
+                <p id="text-editor-error" class="text-editor__error" role="status" hidden data-i18n="emptyTextError">Enter some text before saving.</p>
                 <div class="text-editor__actions">
-                    <button type="button" id="save-text-button" class="edit-button">Save and open</button>
-                    <button type="button" id="cancel-text-edit" class="edit-button">Cancel</button>
+                    <button type="button" id="save-text-button" class="edit-button" data-i18n="saveAndOpen">Save and open</button>
+                    <button type="button" id="cancel-text-edit" class="edit-button" data-i18n="cancel">Cancel</button>
                 </div>
             </section>
         </div>
         <div class="words-container" style="display:none;">   
-            <h1>Your vocabulary</h1>     
-            <p>Upload, edit and save the list of words using a CSV file format with " delimiter and ; separator.<br>state;word;definition;example1;image1;example2;image2;...
+            <h1 data-i18n="vocabularyTitle">Your vocabulary</h1>     
+            <p><span data-i18n="vocabularyInstructions">Upload, edit, or download your word list as a CSV file.</span><br><code>state;word;definition;example1;image1;example2;image2;...</code>
             </p>
             <p><textarea id="csv-input" class="copy-paste-area" rows="15" cols="40"></textarea></p>
-            <button id="load-words-button" class="edit-button">Refresh</button> |
-            <button id="update-words-button" class="edit-button">Update</button> |
-            <button id="download-csv-button" class="edit-button">Download</button> |
-            <button id="upload-link" class="edit-button">Upload</button> <input type="file" id="csv-upload" accept=".csv" style="display: none;"> |
-            <a href="#" id="download-images-button" class="edit-button" onclick="downloadAllImages()">Download images</a>
+            <button id="load-words-button" class="edit-button" data-i18n="refresh">Refresh</button> |
+            <button id="update-words-button" class="edit-button" data-i18n="update">Update</button> |
+            <button id="download-csv-button" class="edit-button" data-i18n="downloadCsv">Download CSV</button> |
+            <button id="upload-link" class="edit-button" data-i18n="uploadCsv">Upload CSV</button> <input type="file" id="csv-upload" accept=".csv" style="display: none;"> |
+            <a href="#" id="download-images-button" class="edit-button" onclick="downloadAllImages()" data-i18n="downloadImages">Download images</a>
         </div>
         <div id="definition-box" class="definition-box" style="display:none;">
             <div class="definition-box__header">
                 <span class="definition-box__handle" aria-hidden="true"></span>
-                <button type="button" class="definition-box__close" aria-label="Close word details" onclick="document.getElementById('definition-box').style.display='none';">Close</button>
+                <button type="button" class="definition-box__close" aria-label="Close word details" data-i18n-aria-label="closeWordDetails" onclick="document.getElementById('definition-box').style.display='none';" data-i18n="close">Close</button>
             </div>
             <div id="state-selection"></div>
             <h2 id="word-title"></h2>
             <div id="definition-container">
                 <p id="definition"></p>
                 
-                <button class="edit-button" id="edit-definition-button" onclick="toggleEditDefinition()">Edit</button>
+                <button class="edit-button" id="edit-definition-button" onclick="toggleEditDefinition()" data-i18n="edit">Edit</button>
             </div>
             <div id="examples"></div>
-            <p><button class="edit-button" id="add-example-button">Add an example</button> | <span id="wiktionary"></span></p>
+            <p><button class="edit-button" id="add-example-button" data-i18n="addExample">Add an example</button> | <span id="wiktionary"></span></p>
         </div>
     </div>
 </div>
@@ -116,6 +116,7 @@
   gtag('js', new Date());
   gtag('config', 'G-TC7EDQ16EM');
 </script>
+<script src="translations.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
