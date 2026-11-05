@@ -1,0 +1,31 @@
+name: Mobile emulation smoke check
+
+on:
+  push:
+    branches:
+      - codex/fix-mobile-controls-read-state
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "styles.css"
+      - "script.js"
+      - "tests/mobile-emulation-smoke.cjs"
+      - ".github/workflows/mobile-emulation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-emulation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm init -y
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/mobile-emulation-smoke.cjs
