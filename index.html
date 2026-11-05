@@ -12,7 +12,6 @@
 <div class="app-controls">
             <div class="text-actions" role="group" aria-label="Text controls">
                 <button type="button" id="toggle-read" class="text-action is-selected" aria-pressed="true">Read</button>
-                <button type="button" id="toggle-play" class="text-action text-action--auxiliary">Play</button>
                 <button type="button" id="toggle-text" class="text-action" aria-pressed="false">Change</button>
             </div>
             <details id="options-menu" class="options-menu">
@@ -37,9 +36,12 @@
                 <button type="button" id="cancel-learning-language" hidden>Cancel</button>
             </div>
         </div>
-        <p id="text">
-            Guten Tag!
-        </p>        
+        <div class="text-workspace" aria-label="Open texts">
+            <div id="text-tabs" class="text-tabs" role="tablist" aria-label="Open texts"></div>
+            <button type="button" id="add-text-tab" class="text-tab-add" aria-label="Add or open a text" title="Add or open a text">+</button>
+        </div>
+        <h1 id="active-text-title" class="active-text-title"></h1>
+        <div id="text" aria-label="Text content"></div>
     </div>
     <div class="sidebar">
         <div class="about-container">
@@ -50,12 +52,12 @@
             <p>Choose your learning language the first time you use the app. You can change it later from Options. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
             <p>As a learner, you can:</p><ul>
                 <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
-                <li>Click <a href="#" id="toggle-text">Change text</a> to use any text you want.</li>
+                <li>Use <a href="#" id="toggle-text-about">Change</a> to open saved texts, add one by pasting, or edit it.</li>
                 <li>Edit, download, or upload  <a href="#" id="toggle-words">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
             </ul>
 
             <p>Known issues:</p><ul></l>
-                <li>The text is not saved. Only your vocabulary and images are saved in your browser. It cannot (yet) be shared across multiple devices.</li>
+                <li>Texts, vocabulary, and images are saved in this browser. They are not shared across devices.</li>
                 <li>This app uses a consent manager to track only users who have agreed to analytics tracking (aka. Google Analytics).</li>
                 <li>Examples (still) not work for mulitple words.</li>
                 <li>You (still) cannot upload/donlowad images for your examples. Examples (still) not work for mulitple words.</li>
@@ -63,11 +65,23 @@
             <p>Let me know what you think. And if you want, you can <a href="https://github.com/jrosell/language-learning-in-context/">contribute or open an issue</a>.</p>
             <p>I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
-        <div class="text-container" style="display:none;">   
-            <h1>Change text</h1>     
-            <p>Use any text you want.</p>
-            <p><textarea id="text-input" class="text-area" rows="15" cols="40"></textarea></p>
-            <button id="update-text-button" class="edit-button">Update</button>
+        <div class="text-container" style="display:none;">
+            <h1>Texts</h1>
+            <p>Open a saved text, or create one by pasting or typing it below.</p>
+            <button type="button" id="new-text-button" class="edit-button">New text</button>
+            <ul id="saved-text-list" class="saved-text-list" aria-label="Saved texts"></ul>
+            <section id="text-editor" class="text-editor" hidden>
+                <h2 id="text-editor-heading">New text</h2>
+                <label for="text-title-input">Title</label>
+                <input id="text-title-input" class="text-title-input" type="text" maxlength="100" autocomplete="off">
+                <label for="text-input">Text</label>
+                <textarea id="text-input" class="text-area" rows="12" cols="40" aria-required="true"></textarea>
+                <p id="text-editor-error" class="text-editor__error" role="status" hidden>Enter some text before saving.</p>
+                <div class="text-editor__actions">
+                    <button type="button" id="save-text-button" class="edit-button">Save and open</button>
+                    <button type="button" id="cancel-text-edit" class="edit-button">Cancel</button>
+                </div>
+            </section>
         </div>
         <div class="words-container" style="display:none;">   
             <h1>Your vocabulary</h1>     
@@ -109,3 +123,4 @@
 <script src="script.js"></script>
 </body>
 </html>
+
