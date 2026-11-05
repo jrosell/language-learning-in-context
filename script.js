@@ -141,7 +141,7 @@ function applyLearningLanguageAttributes() {
 }
 
 function updateLanguageMenuLabel() {
-    document.getElementById("open-language-settings").textContent =
+    document.getElementById("language-menu-label").textContent =
         "Aprenc " + learningLanguages[currentLanguage].menuLabel;
 }
 
@@ -151,7 +151,7 @@ function normalizeLanguageSearch(value) {
 
 function renderLearningLanguageOptions() {
     const options = document.getElementById("learning-language-options");
-    options.replaceChildren();
+    options.textContent = "";
 
     Object.entries(learningLanguages).forEach(([code, language]) => {
         const option = document.createElement("label");
@@ -686,21 +686,6 @@ function playText(){
 }
 
 function initialize() {
-    renderLearningLanguageOptions();
-    showReadView();
-    const textElement = document.getElementById("text");
-    if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
-        textElement.textContent = learningLanguages[currentLanguage].sample;
-    }
-    const firstRun = !hasSelectedLearningLanguage;
-    document.getElementById("language-picker").hidden = !firstRun;
-    document.getElementById("open-language-settings").setAttribute("aria-expanded", String(firstRun));
-    document.getElementById("save-learning-language").textContent =
-        firstRun ? "Start learning" : "Save language";
-    document.getElementById("cancel-learning-language").hidden = firstRun;
-    updateLanguageMenuLabel();
-    applyLearningLanguageAttributes();
-    refreshWordList()     
     document.getElementById('load-words-button').onclick = loadCurrentWords;
     document.getElementById('update-words-button').onclick = function() {
         const csvInput = document.getElementById('csv-input').value;
@@ -765,6 +750,22 @@ function initialize() {
     document.getElementById("save-learning-language").onclick = saveLearningLanguage;
     document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
     document.getElementById('toggle-play').onclick = playText
+    renderLearningLanguageOptions();
+    showReadView();
+    const textElement = document.getElementById("text");
+    if (currentLanguage !== "de" && textElement.innerText.trim() === learningLanguages.de.sample) {
+        textElement.textContent = learningLanguages[currentLanguage].sample;
+    }
+    const firstRun = !hasSelectedLearningLanguage;
+    document.getElementById("language-picker").hidden = !firstRun;
+    document.getElementById("open-language-settings").setAttribute("aria-expanded", String(firstRun));
+    document.getElementById("save-learning-language").textContent =
+        firstRun ? "Start learning" : "Save language";
+    document.getElementById("cancel-learning-language").hidden = firstRun;
+    updateLanguageMenuLabel();
+    applyLearningLanguageAttributes();
+    refreshWordList()     
+
 }
 
 initialize();
