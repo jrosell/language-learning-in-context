@@ -11,9 +11,10 @@
     <h1>Work in progress: Examples should be reused for multiple words</h1>
     <div class="main-content"> 
 <div class="app-controls">
-            <div class="text-actions" role="group" aria-label="Text actions">
-                <button type="button" id="toggle-text" class="text-action">New text</button>
-                <button type="button" id="toggle-play" class="text-action">Play</button>
+            <div class="text-actions" role="group" aria-label="Text controls">
+                <button type="button" id="toggle-read" class="text-action is-selected" aria-pressed="true">Read</button>
+                <button type="button" id="toggle-play" class="text-action text-action--auxiliary">Play</button>
+                <button type="button" id="toggle-text" class="text-action" aria-pressed="false">Change</button>
             </div>
             <details id="options-menu" class="options-menu">
                 <summary>Options</summary>
@@ -26,21 +27,12 @@
         </div>
         <div id="language-picker" class="language-picker" hidden>
             <h2 id="language-picker-heading">Choose your learning language</h2>
-            <label for="learning-language">Learning language</label>
-            <select id="learning-language" aria-label="Learning language">
-                <option value="de">German</option>
-                <option value="en">English</option>
-                <option value="ca">Catalan</option>
-                <option value="vi">Vietnamese</option>
-                <option value="zh">Chinese (Simplified)</option>
-                <option value="ar">Arabic</option>
-                <option value="ur">Urdu</option>
-                <option value="ru">Russian</option>
-                <option value="hi">Hindi</option>
-                <option value="fr">French</option>
-                <option value="es">Spanish</option>
-                <option value="fil">Filipino</option>
-            </select>
+            <div class="language-picker__search">
+            <label for="learning-language-search">Search languages</label>
+            <input type="search" id="learning-language-search" autocomplete="off" placeholder="Type a language name" aria-controls="learning-language-options">
+        </div>
+        <fieldset id="learning-language-options" class="language-picker__list" aria-label="Available learning languages"></fieldset>
+        <p id="language-search-empty" class="language-picker__empty" role="status" aria-live="polite" hidden>No languages match your search.</p>
             <div class="language-picker__actions">
                 <button type="button" id="save-learning-language">Start learning</button>
                 <button type="button" id="cancel-learning-language" hidden>Cancel</button>
@@ -59,7 +51,7 @@
             <p>Choose your learning language the first time you use the app. You can change it later from Options. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
             <p>As a learner, you can:</p><ul>
                 <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
-                <li>Click <a href="#" id="toggle-text">New text</a> to use any text you want.</li>
+                <li>Click <a href="#" id="toggle-text">Change text</a> to use any text you want.</li>
                 <li>Edit, download, or upload  <a href="#" id="toggle-words">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)                     
                 <li>You can download all the images you upload in a zip file.</li>
             </ul>
@@ -72,7 +64,7 @@
             <p>I hope you enjoy it,<br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
         <div class="text-container" style="display:none;">   
-            <h1>New text</h1>     
+            <h1>Change text</h1>     
             <p>Use any text you want.</p>
             <p><textarea id="text-input" class="text-area" rows="15" cols="40"></textarea></p>
             <button id="update-text-button" class="edit-button">Update</button>
