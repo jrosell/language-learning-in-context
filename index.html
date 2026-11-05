@@ -9,13 +9,22 @@
 <body>     
 <div class="content-container">    
     <div class="main-content"> 
-        <nav class="utility-links" aria-label="Main controls">
-            <a href="#" id="toggle-text">New text</a>
-            <a href="#" id="toggle-play">Play</a>
-            <a href="#" id="toggle-words">Your vocabulary</a>
-            <a href="#" id="toggle-about">About</a>
-        </nav>
-        <div class="language-control">
+<div class="app-controls">
+            <div class="text-actions" role="group" aria-label="Text actions">
+                <button type="button" id="toggle-text" class="text-action">New text</button>
+                <button type="button" id="toggle-play" class="text-action">Play</button>
+            </div>
+            <details id="options-menu" class="options-menu">
+                <summary>Options</summary>
+                <div class="options-menu__items" role="group" aria-label="Options">
+                    <button type="button" id="toggle-words">Your vocabulary</button>
+                    <button type="button" id="toggle-about">About</button>
+                    <button type="button" id="open-language-settings">Learning language: German</button>
+                </div>
+            </details>
+        </div>
+        <div id="language-picker" class="language-picker" hidden>
+            <h2 id="language-picker-heading">Choose your learning language</h2>
             <label for="learning-language">Learning language</label>
             <select id="learning-language" aria-label="Learning language">
                 <option value="de">German</option>
@@ -31,6 +40,10 @@
                 <option value="es">Spanish</option>
                 <option value="fil">Filipino</option>
             </select>
+            <div class="language-picker__actions">
+                <button type="button" id="save-learning-language">Start learning</button>
+                <button type="button" id="cancel-learning-language" hidden>Cancel</button>
+            </div>
         </div>
         <p id="text">
             Guten Tag!
@@ -42,7 +55,7 @@
             <h2>Language learning in context</h2>
             <p>Hello! I'm Jordi Rosell. I created this app to help language learners acquire vocabulary in context.</p>
 
-            <p>Choose the language you want to learn from the selector. The app supports German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
+            <p>Choose your learning language the first time you use the app. You can change it later from Options. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
             <p>As a learner, you can:</p><ul>
                 <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
                 <li>Click <a href="#" id="toggle-text">New text</a> to use any text you want.</li>
