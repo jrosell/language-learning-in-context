@@ -115,20 +115,23 @@ body {
     justify-content: space-between;
 }
 
-.options-menu__items button#open-language-settings::after {
-    width: 7px;
-    height: 7px;
-    margin: 0 2px 4px 12px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    content: "";
-    transform: rotate(45deg);
-    transition: transform 120ms ease;
+.language-menu__chevron {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    overflow: visible;
+    color: #3f2d73;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 140ms ease;
 }
 
-.options-menu__items button#open-language-settings[aria-expanded="true"]::after {
-    margin-bottom: 0;
-    transform: rotate(225deg);
+.options-menu__items button#open-language-settings[aria-expanded="true"] .language-menu__chevron {
+    transform: rotate(180deg);
 }
 
 .language-picker {
@@ -435,6 +438,10 @@ label input[type="radio"]:checked[value="learned"] + span {
     .sidebar {
         padding: 16px;
         box-shadow: none;
+    }
+
+    .about-container {
+        padding: 0;
     }
 
     .app-controls {
