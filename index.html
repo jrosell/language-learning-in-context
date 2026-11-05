@@ -10,14 +10,11 @@
 <div class="content-container">    
     <div class="main-content"> 
 <div class="app-controls">
-            <details id="options-menu" class="options-menu">
-                <summary>Options</summary>
-                <div class="options-menu__items" role="group" aria-label="Options">
-                    <button type="button" id="toggle-words">Your vocabulary</button>
-                    <button type="button" id="toggle-about">About</button>
-                    <button type="button" id="open-language-settings" aria-controls="language-picker" aria-expanded="false"><span id="language-menu-label">Aprenc alemany</span><svg class="language-menu__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></button>
-                </div>
-            </details>
+            <nav class="utility-actions" aria-label="App navigation">
+                <button type="button" id="open-language-settings" class="utility-action utility-action--language" aria-controls="language-picker" aria-expanded="false"><span id="language-menu-label">Aprenc alemany</span><svg class="language-menu__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></button>
+                <button type="button" id="toggle-words" class="utility-action">Vocabulary</button>
+                <button type="button" id="toggle-about" class="utility-action">About</button>
+            </nav>
         </div>
         <div id="language-picker" class="language-picker" hidden>
             <h2 id="language-picker-heading">Choose your learning language</h2>
@@ -45,11 +42,11 @@
             <h2>Language learning in context</h2>
             <p>Hello! I'm Jordi Rosell. I created this app to help language learners acquire vocabulary in context.</p>
 
-            <p>Choose your learning language the first time you use the app. You can change it later from Options. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
+            <p>Choose your learning language the first time you use the app. You can change it later using the learning-language control in the top bar. Supported languages include German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino.</p>
             <p>As a learner, you can:</p><ul>
                 <li>Click on a word view, update, or add its definition, new/learning/learned status, and usage examples with images and YouTube links.</li>
                 <li>Use the <strong>+</strong> button to open saved texts, add one by pasting, or edit it.</li>
-                <li>Edit, download, or upload  <a href="#" id="toggle-words">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
+                <li>Edit, download, or upload  <a href="#" id="toggle-words-about">your vocabulary</a> using a CSV file format. (Yes, you can load your words by simply copying and pasting them or uploading a CSV.)
             </ul>
 
             <p>Known issues:</p><ul></l>
