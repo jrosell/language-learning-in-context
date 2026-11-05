@@ -143,18 +143,25 @@ function changeLearningLanguage(event) {
     if (!learningLanguages[nextLanguage] || nextLanguage === currentLanguage) return;
 
     const textElement = document.getElementById("text");
-    const textWasSample = textElement.innerText.trim() === learningLanguages[currentLanguage].sample;
+    const textInput = document.getElementById("text-input");
+    const oldSample = learningLanguages[currentLanguage].sample;
+    const textWasSample = textElement.innerText.trim() === oldSample;
+    const inputWasSample = textInput.value.trim() === oldSample;
+
     currentLanguage = nextLanguage;
     localStorage.setItem("learning_language", currentLanguage);
     allWords = loadWordsForLanguage();
     ensureGermanStarterWord();
 
-    if (textWasSample) {
-        textElement.textContent = learningLanguages[currentLanguage].sample;
-    }
+    const newSample = learningLanguages[currentLanguage].sample;
+    if (textWasSample) textElement.textContent = newSample;
+    if (inputWasSample) textInput.value = newSample;
+
     document.getElementById("definition-box").style.display = "none";
     applyLearningLanguageAttributes();
     refreshWordList();
+    const wordsContainer = document.querySelector(".words-container");
+    if (wordsContainer && wordsContainer.style.display === "block") loadCurrentWords();
 }
 
 ensureGermanStarterWord();
