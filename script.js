@@ -523,7 +523,7 @@ function renderSavedTextList() {
         actions.className = "saved-text-list__actions";
         const openButton = document.createElement("button");
         openButton.type = "button";
-        openButton.textContent = openTextIds.includes(textDocument.id) ? "Switch" : "Open";
+        openButton.textContent = "Read";
         openButton.addEventListener("click", () => openTextDocument(textDocument.id));
 
         const editButton = document.createElement("button");
