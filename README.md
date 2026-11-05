@@ -2,7 +2,7 @@
 
 This app helps language learners build vocabulary from texts they choose.
 
-Choose a learning language the first time you use the app. To change it later, use the learning-language control in the top bar. The top bar also links directly to your vocabulary and About. Supported languages are German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino. The interface is currently in English.
+Choose a learning language the first time you use the app. To change it later, use the learning-language control in the top bar. The top bar also links directly to your vocabulary and About. Supported languages are German, English, Catalan, Vietnamese, Chinese (Simplified), Arabic, Urdu, Russian, Hindi, French, Spanish and Filipino. English is the default interface language; the interface follows the selected learning language.
 
 With the app, you can:
 
