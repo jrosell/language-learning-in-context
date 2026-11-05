@@ -109,6 +109,28 @@ body {
     background: #f4f4f4;
 }
 
+.options-menu__items button#open-language-settings {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.options-menu__items button#open-language-settings::after {
+    width: 7px;
+    height: 7px;
+    margin: 0 2px 4px 12px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    content: "";
+    transform: rotate(45deg);
+    transition: transform 120ms ease;
+}
+
+.options-menu__items button#open-language-settings[aria-expanded="true"]::after {
+    margin-bottom: 0;
+    transform: rotate(225deg);
+}
+
 .language-picker {
     display: flex;
     flex-wrap: wrap;
