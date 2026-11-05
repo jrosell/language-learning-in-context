@@ -1,0 +1,171 @@
+device:
+  name: Android phone
+  viewport:
+    width: 393
+    height: 852
+  screen:
+    width: 393
+    height: 852
+  deviceScaleFactor: 2.75
+  isMobile: true
+  hasTouch: true
+  userAgent: >-
+    Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36
+    (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36
+
+server:
+  port: 4173
+
+timeoutMs: 10000
+artifactDirectory: artifacts/mobile-emulation
+
+captures:
+  - name: first-run-language-picker
+    screenshot: 01-first-run-language-picker.png
+    assertions:
+      - type: mobile-emulation
+      - type: visible
+        selector: "#language-picker"
+      - type: attribute-equals
+        selector: "#open-language-settings"
+        name: aria-expanded
+        value: "true"
+      - type: no-horizontal-overflow
+
+  - name: read-german
+    screenshot: 02-read-german.png
+    actions:
+      - type: tap
+        selector: "#save-learning-language"
+    assertions:
+      - type: hidden
+        selector: "#language-picker"
+      - type: text-equals
+        selector: "#language-menu-label"
+        value: Aprenc alemany
+      - type: text-contains
+        selector: "#text"
+        value: Guten Tag!
+
+  - name: catalan-language-search
+    screenshot: 03-catalan-language-search.png
+    actions:
+      - type: tap
+        selector: "#open-language-settings"
+      - type: fill
+        selector: "#learning-language-search"
+        value: Catalan
+      - type: tap
+        selector: ".language-option:has(input[value='ca'])"
+    assertions:
+      - type: visible
+        selector: "#language-picker"
+      - type: checked
+        selector: "input[name='learning-language'][value='ca']"
+
+  - name: read-catalan
+    screenshot: 04-read-catalan.png
+    actions:
+      - type: tap
+        selector: "#save-learning-language"
+    assertions:
+      - type: text-equals
+        selector: "#language-menu-label"
+        value: Aprenc català
+      - type: text-contains
+        selector: "#text"
+        value: Bon dia.
+
+  - name: active-second-sentence
+    screenshot: 05-active-second-sentence.png
+    actions:
+      - type: tap
+        selector: "#text .text-sentence[data-sentence-index='1'] .text-sentence__content"
+    assertions:
+      - type: active-sentence
+        index: 1
+
+  - name: about-mobile-alignment
+    screenshot: 06-about-mobile-alignment.png
+    actions:
+      - type: tap
+        selector: "#toggle-about"
+    assertions:
+      - type: visible
+        selector: ".about-container h1"
+      - type: same-left-alignment
+        selectors:
+          - "#text"
+          - ".about-container h1"
+        tolerance: 1
+      - type: no-horizontal-overflow
+
+  - name: vocabulary
+    screenshot: 07-vocabulary.png
+    actions:
+      - type: tap
+        selector: "#toggle-words"
+    assertions:
+      - type: visible
+        selector: ".words-container h1"
+
+  - name: text-manager
+    screenshot: 08-text-manager.png
+    actions:
+      - type: tap
+        selector: "#add-text-tab"
+    assertions:
+      - type: visible
+        selector: ".text-container h1"
+      - type: visible
+        selector: "#saved-text-list"
+
+  - name: new-text-editor
+    screenshot: 09-new-text-editor.png
+    actions:
+      - type: tap
+        selector: "#new-text-button"
+      - type: fill
+        selector: "#text-title-input"
+        value: Mobile smoke text
+      - type: fill
+        selector: "#text-input"
+        value: Bon dia. Com estàs avui?
+    assertions:
+      - type: visible
+        selector: "#text-editor"
+
+  - name: saved-text-manager
+    screenshot: 10-saved-text-manager.png
+    actions:
+      - type: tap
+        selector: "#save-text-button"
+      - type: tap
+        selector: "#add-text-tab"
+    assertions:
+      - type: saved-text-read-actions
+
+  - name: read-open-text
+    screenshot: 11-read-open-text.png
+    actions:
+      - type: tap-saved-text-read
+        title: Mobile smoke text
+    assertions:
+      - type: text-equals
+        selector: "#active-text-title"
+        value: Mobile smoke text
+
+  - name: read-closed-text
+    screenshot: 12-read-closed-text.png
+    actions:
+      - type: tap-tab-close
+        title: Mobile smoke text
+      - type: tap
+        selector: "#add-text-tab"
+      - type: tap-saved-text-read
+        title: Mobile smoke text
+    assertions:
+      - type: text-equals
+        selector: "#active-text-title"
+        value: Mobile smoke text
+      - type: no-horizontal-overflow
