@@ -11,6 +11,7 @@ on:
       - "index.html"
       - "styles.css"
       - "script.js"
+      - "translations.js"
       - "tests/mobile-emulation-smoke.cjs"
       - "tests/mobile-emulation.yml"
       - ".github/workflows/mobile-emulation.yml"
