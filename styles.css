@@ -440,6 +440,10 @@ label input[type="radio"]:checked[value="learned"] + span {
         box-shadow: none;
     }
 
+    .about-container {
+        padding: 0;
+    }
+
     .app-controls {
         padding: 6px 0 10px;
     }
