@@ -53,7 +53,17 @@ captures:
         value: About
       - type: text-contains
         selector: "#text"
-        value: Hello!
+        value: Good morning!
+      - type: text-contains
+        selector: "#text"
+        value: student
+      - type: text-contains
+        selector: "#text"
+        value: teacher
+      - type: active-sentence
+        index: 0
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
 
   - name: catalan-language-search
     screenshot: 03-catalan-language-search.png
@@ -88,7 +98,15 @@ captures:
         value: Sobre
       - type: text-contains
         selector: "#text"
-        value: Bon dia.
+        value: Bon dia!
+      - type: text-contains
+        selector: "#text"
+        value: estudiant
+      - type: text-contains
+        selector: "#text"
+        value: professora
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
 
   - name: active-second-sentence
     screenshot: 05-active-second-sentence.png
@@ -185,3 +203,94 @@ captures:
         selector: "#active-text-title"
         value: Mobile smoke text
       - type: no-horizontal-overflow
+
+  - name: welcome-german
+    screenshot: 13-welcome-german.png
+    actions:
+      - type: read-welcome-language
+        language: de
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-vietnamese
+    screenshot: 14-welcome-vietnamese.png
+    actions:
+      - type: read-welcome-language
+        language: vi
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-chinese
+    screenshot: 15-welcome-chinese.png
+    actions:
+      - type: read-welcome-language
+        language: zh
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-arabic
+    screenshot: 16-welcome-arabic.png
+    actions:
+      - type: read-welcome-language
+        language: ar
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-urdu
+    screenshot: 17-welcome-urdu.png
+    actions:
+      - type: read-welcome-language
+        language: ur
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-russian
+    screenshot: 18-welcome-russian.png
+    actions:
+      - type: read-welcome-language
+        language: ru
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-hindi
+    screenshot: 19-welcome-hindi.png
+    actions:
+      - type: read-welcome-language
+        language: hi
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-french
+    screenshot: 20-welcome-french.png
+    actions:
+      - type: read-welcome-language
+        language: fr
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-spanish
+    screenshot: 21-welcome-spanish.png
+    actions:
+      - type: read-welcome-language
+        language: es
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+
+  - name: welcome-filipino
+    screenshot: 22-welcome-filipino.png
+    actions:
+      - type: read-welcome-language
+        language: fil
+    assertions:
+      - type: welcome-dialogue
+      - type: no-horizontal-overflow
+

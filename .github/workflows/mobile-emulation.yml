@@ -14,6 +14,7 @@ on:
       - "translations.js"
       - "tests/mobile-emulation-smoke.cjs"
       - "tests/mobile-emulation.yml"
+      - "tests/welcome-stories.cjs"
       - ".github/workflows/mobile-emulation.yml"
 
 permissions:
@@ -27,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: node --test tests/welcome-stories.cjs
       - run: npm init -y
       - run: npm install --no-save playwright yaml
       - run: npx playwright install --with-deps chromium
@@ -38,3 +40,4 @@ jobs:
           path: artifacts/mobile-emulation/
           if-no-files-found: warn
           retention-days: 14
+
