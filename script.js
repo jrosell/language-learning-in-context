@@ -1,26 +1,54 @@
 
 const learningLanguages = {
-    de: { label: "German", menuLabel: "alemany", locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
-    en: { label: "English", menuLabel: "anglès", locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
-    ca: { label: "Catalan", menuLabel: "català", locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia. Com estàs avui?" },
-    vi: { label: "Vietnamese", menuLabel: "vietnamita", locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
-    zh: { label: "Chinese (Simplified)", menuLabel: "xinès simplificat", locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
-    ar: { label: "Arabic", menuLabel: "àrab", locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
-    ur: { label: "Urdu", menuLabel: "urdú", locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
-    ru: { label: "Russian", menuLabel: "rus", locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
-    hi: { label: "Hindi", menuLabel: "hindi", locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
-    fr: { label: "French", menuLabel: "francès", locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
-    es: { label: "Spanish", menuLabel: "castellà", locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
-    fil: { label: "Filipino", menuLabel: "filipí", locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
+    de: { label: "Deutsch", searchLabels: ["Deutsch", "German"], locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
+    en: { label: "English", searchLabels: ["English"], locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
+    ca: { label: "Català", searchLabels: ["Català", "Catalan"], locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia. Com estàs avui?" },
+    vi: { label: "Tiếng Việt", searchLabels: ["Tiếng Việt", "Vietnamese"], locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
+    zh: { label: "中文（简体）", searchLabels: ["中文", "简体中文", "Chinese", "Chinese Simplified"], locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
+    ar: { label: "العربية", searchLabels: ["العربية", "Arabic"], locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
+    ur: { label: "اردو", searchLabels: ["اردو", "Urdu"], locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
+    ru: { label: "Русский", searchLabels: ["Русский", "Russian"], locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
+    hi: { label: "हिन्दी", searchLabels: ["हिन्दी", "हिंदी", "Hindi"], locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
+    fr: { label: "Français", searchLabels: ["Français", "French"], locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
+    es: { label: "Español", searchLabels: ["Español", "Spanish"], locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
+    fil: { label: "Filipino", searchLabels: ["Filipino"], locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
 };
 
 const savedLanguage = localStorage.getItem("learning_language");
-let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "de";
+let currentLanguage = learningLanguages[savedLanguage] ? savedLanguage : "en";
 let hasSelectedLearningLanguage = Boolean(learningLanguages[savedLanguage]);
 let pendingLanguage = currentLanguage;
 const TEXT_DOCUMENTS_STORAGE_KEY = "language_learning_text_documents_v1";
 const OPEN_TEXT_IDS_STORAGE_KEY = "language_learning_open_text_ids_v1";
 const ACTIVE_TEXT_ID_STORAGE_KEY = "language_learning_active_text_id_v1";
+
+function uiText(key, values = {}, languageCode = currentLanguage) {
+    const translations = window.uiTranslations || {};
+    const dictionary = translations[languageCode] || translations.en || {};
+    const template = dictionary[key] || (translations.en && translations.en[key]) || key;
+    return String(template).replace(/\{(\w+)\}/g, (match, name) =>
+        Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : match
+    );
+}
+
+function applyInterfaceLanguage() {
+    const language = learningLanguages[currentLanguage];
+    document.documentElement.lang = language.locale;
+    document.documentElement.dir = language.direction;
+    document.title = uiText("appTitle");
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = uiText(element.dataset.i18n);
+    });
+
+    ["placeholder", "aria-label", "title"].forEach(attribute => {
+        document.querySelectorAll("[data-i18n-" + attribute + "]").forEach(element => {
+            const key = element.getAttribute("data-i18n-" + attribute);
+            element.setAttribute(attribute, uiText(key));
+        });
+    });
+    updateLanguageMenuLabel();
+}
 
 function createTextId() {
     return "text-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -34,7 +62,7 @@ function loadTextDocuments() {
                 .filter(document => document && typeof document.content === "string")
                 .map(document => ({
                     id: String(document.id || createTextId()),
-                    title: String(document.title || "Untitled text"),
+                    title: String(document.title || uiText("untitledText")),
                     content: document.content,
                     activeSentenceIndex: Number.isInteger(document.activeSentenceIndex)
                         ? Math.max(0, document.activeSentenceIndex)
@@ -49,7 +77,7 @@ function loadTextDocuments() {
 
     return [{
         id: createTextId(),
-        title: "Welcome",
+        title: uiText("welcomeTitle"),
         content: learningLanguages[currentLanguage].sample,
         activeSentenceIndex: 0,
         isStarter: true
@@ -90,7 +118,7 @@ function hasUnsavedTextEditorChanges() {
 }
 
 function confirmDiscardTextEditorChanges() {
-    return !hasUnsavedTextEditorChanges() || window.confirm("Discard unsaved text changes?");
+    return !hasUnsavedTextEditorChanges() || window.confirm(uiText("discardChanges"));
 }
 
 function getActiveTextDocument() {
@@ -233,8 +261,7 @@ function applyLearningLanguageAttributes() {
 }
 
 function updateLanguageMenuLabel() {
-    document.getElementById("language-menu-label").textContent =
-        "Aprenc " + learningLanguages[currentLanguage].menuLabel;
+    document.getElementById("language-menu-label").textContent = uiText("languageMenuLabel");
 }
 
 function normalizeLanguageSearch(value) {
@@ -248,7 +275,9 @@ function renderLearningLanguageOptions() {
     Object.entries(learningLanguages).forEach(([code, language]) => {
         const option = document.createElement("label");
         option.className = "language-option";
-        option.dataset.searchText = normalizeLanguageSearch(language.label);
+        option.dataset.searchText = normalizeLanguageSearch(
+            [language.label].concat(language.searchLabels || []).join(" ")
+        );
 
         const radio = document.createElement("input");
         radio.type = "radio";
@@ -308,9 +337,9 @@ function openLearningLanguageSettings() {
     syncLearningLanguageSelection();
     resetLanguagePickerSearch();
     document.getElementById("language-picker-heading").textContent =
-        firstRun ? "Choose your learning language" : "Change learning language";
+        firstRun ? uiText("chooseLanguage") : uiText("changeLanguage");
     document.getElementById("save-learning-language").textContent =
-        firstRun ? "Start learning" : "Save language";
+        firstRun ? uiText("startLearning") : uiText("saveLanguage");
     document.getElementById("cancel-learning-language").hidden = firstRun;
     document.getElementById("language-picker").hidden = false;
     document.getElementById("open-language-settings").setAttribute("aria-expanded", "true");
@@ -329,7 +358,8 @@ function saveLearningLanguage() {
     if (!learningLanguages[nextLanguage]) return;
     stopTextPlayback();
 
-    const oldSample = learningLanguages[currentLanguage].sample;
+    const previousLanguage = currentLanguage;
+    const oldSample = learningLanguages[previousLanguage].sample;
     const untouchedWelcomeText = textDocuments.find(document =>
         document.isStarter && document.content.trim() === oldSample
     );
@@ -342,16 +372,23 @@ function saveLearningLanguage() {
     ensureGermanStarterWord();
 
     const newSample = learningLanguages[currentLanguage].sample;
-    if (untouchedWelcomeText) untouchedWelcomeText.content = newSample;
+    if (untouchedWelcomeText) {
+        untouchedWelcomeText.content = newSample;
+        const defaultWelcomeTitles = Object.values(window.uiTranslations || {})
+            .map(translations => translations.welcomeTitle);
+        if (defaultWelcomeTitles.includes(untouchedWelcomeText.title)) {
+            untouchedWelcomeText.title = uiText("welcomeTitle");
+        }
+    }
     saveTextWorkspace();
 
     resetLanguagePickerSearch();
     document.getElementById("language-picker").hidden = true;
     document.getElementById("open-language-settings").setAttribute("aria-expanded", "false");
     document.getElementById("definition-box").style.display = "none";
+    applyInterfaceLanguage();
     applyLearningLanguageAttributes();
     refreshWordList();
-    updateLanguageMenuLabel();
 
     const wordsContainer = document.querySelector(".words-container");
     if (wordsContainer && wordsContainer.style.display === "block") loadCurrentWords();
@@ -385,7 +422,7 @@ function splitTextIntoSentences(text) {
 
 function getTextTitle(content) {
     const firstSentence = splitTextIntoSentences(content)[0];
-    const title = firstSentence ? firstSentence.text.trim() : "Untitled text";
+    const title = firstSentence ? firstSentence.text.trim() : uiText("untitledText");
     return title.length > 60 ? title.slice(0, 57).trimEnd() + "…" : title;
 }
 
@@ -412,7 +449,7 @@ function renderTextTabs() {
         const closeButton = document.createElement("button");
         closeButton.type = "button";
         closeButton.className = "text-tab__close";
-        closeButton.setAttribute("aria-label", "Close " + textDocument.title);
+        closeButton.setAttribute("aria-label", uiText("closeTab", { title: textDocument.title }));
         closeButton.textContent = "×";
         closeButton.addEventListener("click", () => closeTextDocument(id));
 
@@ -436,7 +473,7 @@ function renderTextDocument() {
         titleElement.textContent = "";
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "empty-text-message";
-        emptyMessage.textContent = "No text is open. Choose + to open a saved text or add one.";
+        emptyMessage.textContent = uiText("noTextOpen");
         textElement.appendChild(emptyMessage);
         return;
     }
@@ -446,7 +483,7 @@ function renderTextDocument() {
     if (!sentences.length) {
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "empty-text-message";
-        emptyMessage.textContent = "This text is empty. Choose + to open the text manager.";
+        emptyMessage.textContent = uiText("emptyText");
         textElement.appendChild(emptyMessage);
         return;
     }
@@ -461,7 +498,7 @@ function renderTextDocument() {
         sentenceElement.dataset.sentenceIndex = String(index);
         sentenceElement.tabIndex = 0;
         sentenceElement.setAttribute("role", "group");
-        sentenceElement.setAttribute("aria-label", "Sentence " + (index + 1));
+        sentenceElement.setAttribute("aria-label", uiText("sentence", { number: index + 1 }));
         sentenceElement.setAttribute("aria-current", String(index === textDocument.activeSentenceIndex));
         if (index === textDocument.activeSentenceIndex) sentenceElement.classList.add("is-active");
 
@@ -480,19 +517,19 @@ function renderTextDocument() {
         playButton.className = "sentence-controls__play";
         playButton.dataset.sentenceAction = "play";
         playButton.setAttribute("aria-label", sentencePlaybackMode
-            ? "Play the active sentence"
-            : "Play from the active sentence through the rest of the text");
-        playButton.textContent = "▶ Play";
+            ? uiText("playSentence")
+            : uiText("playText"));
+        playButton.textContent = "▶ " + uiText("play");
 
         const sentenceModeButton = document.createElement("button");
         sentenceModeButton.type = "button";
         sentenceModeButton.className = "sentence-controls__repeat";
         sentenceModeButton.dataset.sentenceAction = "sentence-mode";
-        sentenceModeButton.setAttribute("aria-label", "Toggle sentence mode");
+        sentenceModeButton.setAttribute("aria-label", uiText("toggleSentenceMode"));
         sentenceModeButton.setAttribute("aria-pressed", String(sentencePlaybackMode));
         sentenceModeButton.title = sentencePlaybackMode
-            ? "Sentence mode on: Play only the active sentence"
-            : "Sentence mode off: Play the full text";
+            ? uiText("sentenceModeOn")
+            : uiText("sentenceModeOff");
         sentenceModeButton.textContent = "↻";
         sentenceModeButton.classList.toggle("is-selected", sentencePlaybackMode);
 
@@ -500,8 +537,8 @@ function renderTextDocument() {
         stopButton.type = "button";
         stopButton.className = "sentence-controls__stop";
         stopButton.dataset.sentenceAction = "stop";
-        stopButton.setAttribute("aria-label", "Stop playback");
-        stopButton.textContent = "■ Stop";
+        stopButton.setAttribute("aria-label", uiText("stop"));
+        stopButton.textContent = "■ " + uiText("stop");
 
         controls.append(playButton, sentenceModeButton, stopButton);
         sentenceElement.append(sentenceText, controls);
@@ -523,12 +560,12 @@ function renderSavedTextList() {
         actions.className = "saved-text-list__actions";
         const openButton = document.createElement("button");
         openButton.type = "button";
-        openButton.textContent = "Read";
+        openButton.textContent = uiText("read");
         openButton.addEventListener("click", () => openTextDocument(textDocument.id));
 
         const editButton = document.createElement("button");
         editButton.type = "button";
-        editButton.textContent = "Edit";
+        editButton.textContent = uiText("edit");
         editButton.addEventListener("click", () => editTextDocument(textDocument.id));
 
         actions.append(openButton, editButton);
@@ -536,8 +573,8 @@ function renderSavedTextList() {
             const deleteButton = document.createElement("button");
             deleteButton.type = "button";
             deleteButton.className = "saved-text-list__delete";
-            deleteButton.textContent = "Delete";
-            deleteButton.setAttribute("aria-label", "Delete " + textDocument.title);
+            deleteButton.textContent = uiText("delete");
+            deleteButton.setAttribute("aria-label", uiText("delete") + ": " + textDocument.title);
             deleteButton.addEventListener("click", () => deleteTextDocument(textDocument.id));
             actions.appendChild(deleteButton);
         }
@@ -550,7 +587,7 @@ function deleteTextDocument(id) {
     const textDocument = textDocuments.find(document => document.id === id);
     if (!textDocument || textDocument.isStarter) return;
     if (editingTextId === id && !confirmDiscardTextEditorChanges()) return;
-    if (!window.confirm('Delete "' + textDocument.title + '"? This cannot be undone.')) return;
+    if (!window.confirm(uiText("deleteConfirm", { title: textDocument.title }))) return;
 
     stopTextPlayback();
     textDocuments = textDocuments.filter(document => document.id !== id);
@@ -586,10 +623,10 @@ function startNewTextEditor() {
     if (!confirmDiscardTextEditorChanges()) return;
     editingTextId = null;
     document.getElementById("text-editor-error").hidden = true;
-    document.getElementById("text-editor-heading").textContent = "New text";
+    document.getElementById("text-editor-heading").textContent = uiText("newText");
     document.getElementById("text-title-input").value = "";
     document.getElementById("text-input").value = "";
-    document.getElementById("save-text-button").textContent = "Save and open";
+    document.getElementById("save-text-button").textContent = uiText("saveAndOpen");
     document.getElementById("text-editor").hidden = false;
     document.getElementById("text-title-input").focus();
 }
@@ -600,10 +637,10 @@ function editTextDocument(id) {
     if (!textDocument) return;
     editingTextId = id;
     document.getElementById("text-editor-error").hidden = true;
-    document.getElementById("text-editor-heading").textContent = "Edit text";
+    document.getElementById("text-editor-heading").textContent = uiText("editText");
     document.getElementById("text-title-input").value = textDocument.title;
     document.getElementById("text-input").value = textDocument.content;
-    document.getElementById("save-text-button").textContent = "Save changes";
+    document.getElementById("save-text-button").textContent = uiText("saveChanges");
     document.getElementById("text-editor").hidden = false;
     document.getElementById("text-title-input").focus();
 }
@@ -719,7 +756,7 @@ function showDefinition(wordText) {
     }
     document.getElementById('word-title').innerText = wordText;
     document.getElementById('definition').innerText = wordData.definition;
-    document.getElementById('wiktionary').innerHTML = `<a class="edit-button" href="https://${learningLanguages[currentLanguage].wiktionary}.wiktionary.org/w/index.php?search=${encodeURIComponent(wordText)}" target="_blank" rel="noopener">Open Wiktionary</a>`;
+    document.getElementById('wiktionary').innerHTML = `<a class="edit-button" href="https://${learningLanguages[currentLanguage].wiktionary}.wiktionary.org/w/index.php?search=${encodeURIComponent(wordText)}" target="_blank" rel="noopener">${uiText("openWiktionary")}</a>`;
     const examplesContainer = document.getElementById('examples');
     examplesContainer.innerHTML = ''; // Clear previous content
     wordData.examples.forEach((example, index) => {
@@ -742,8 +779,8 @@ function showDefinition(wordText) {
         exampleDiv.innerHTML = `
             <div id="example-${index}">
             <span id="example-text-${index}">${example.text}</span>
-            <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">Edit</button>
-            <p class="image"><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(example.alt)}" target="_blank" class="edit-button">Google Images</a></p>
+            <button class="edit-example" id="edit-example-${index}" onclick="toggleEditExample(${index})">${uiText("edit")}</button>
+            <p class="image"><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(example.alt)}" target="_blank" class="edit-button">${uiText("googleImages")}</a></p>
             <div id="example-image-${index}"></div>
             <p class="caption">${example.alt}</p>
             ${youtubeHtml}
@@ -755,13 +792,13 @@ function showDefinition(wordText) {
     stateContainer.innerHTML = `
         <div class="wordState">
             <label class="new-word">
-                <input type="radio" name="wordState" value="new" ${wordData.state === 'new' ? 'checked' : ''}> New
+                <input type="radio" name="wordState" value="new" ${wordData.state === 'new' ? 'checked' : ''}> ${uiText("newWord")}
             </label>
             <label class="learning-word">
-                <input type="radio" name="wordState" value="learning" ${wordData.state === 'learning' ? 'checked' : ''}> Learning
+                <input type="radio" name="wordState" value="learning" ${wordData.state === 'learning' ? 'checked' : ''}> ${uiText("learningWord")}
             </label>
             <label class="learned-word">
-                <input type="radio" name="wordState" value="learned" ${wordData.state === 'learned' ? 'checked' : ''}> Learned
+                <input type="radio" name="wordState" value="learned" ${wordData.state === 'learned' ? 'checked' : ''}> ${uiText("learnedWord")}
             </label>
         </div>
     `;
@@ -825,11 +862,11 @@ function toggleEditDefinition() {
     const editButton = document.getElementById('edit-definition-button');
     const definitionText = document.getElementById('definition');
     const word = document.getElementById('word-title').innerText;
-    if (editButton.innerText === "Edit") {
-        editButton.innerText = "Save";
+    if (editButton.innerText === uiText("edit")) {
+        editButton.innerText = uiText("save");
         definitionText.innerHTML = `<textarea id="definition-edit" rows="3">${definitionText.innerText}</textarea>`;
     } else {
-        editButton.innerText = "Edit";
+        editButton.innerText = uiText("edit");
         const newDefinition = document.getElementById('definition-edit').value;
         definitionText.innerText = newDefinition;
         allWords[word].definition = newDefinition;
@@ -846,7 +883,7 @@ function toggleEditExample(index) {
     const exampleCaption = document.querySelector(`#example-${index} .caption`);
     const exampleImage = document.querySelector(`#example-${index} .image`);
     const youtubeLink = document.querySelector(`#example-${index} a.youtube`);
-    if (editButton.innerText === "Save") {
+    if (editButton.innerText === uiText("save")) {
         const newExampleText = document.getElementById(`example-textarea-${index}`).value;
         const newExampleAlt = document.getElementById(`example-alt-textarea-${index}`).value;
         const newYouTubeLink = document.getElementById(`example-youtube-textarea-${index}`).value;
@@ -857,7 +894,7 @@ function toggleEditExample(index) {
         saveCurrentWords();
         showDefinition(word);
         console.log("toggleEditExample: Changes saved!");
-        editButton.innerText = "Edit";
+        editButton.innerText = uiText("edit");
     } else {
         exampleCaption.style.display = "none";
         exampleImage.style.display = "none";
@@ -865,10 +902,10 @@ function toggleEditExample(index) {
         exampleContainer.innerHTML = `
             <textarea id="example-textarea-${index}" rows="2">${exampleData.text}</textarea><br>
             <textarea id="example-alt-textarea-${index}" rows="1">${exampleData.alt}</textarea><br>
-            <textarea id="example-youtube-textarea-${index}" rows="1" placeholder="YouTube link">${exampleData.youtube || ''}</textarea><br>
-            <button class="remove-button" onclick="removeExample(${index})">Remove</button>
+            <textarea id="example-youtube-textarea-${index}" rows="1" placeholder="${uiText("youtubeLink")}">${exampleData.youtube || ''}</textarea><br>
+            <button class="remove-button" onclick="removeExample(${index})">${uiText("remove")}</button>
         `;
-        editButton.innerText = "Save"; // Change button text to "Save"
+        editButton.innerText = uiText("save");
     }
 }
 
@@ -884,10 +921,10 @@ function addExample() {
     const newExampleDiv = document.createElement('div');
     newExampleDiv.classList.add('example');
     newExampleDiv.innerHTML = `
-        <textarea id="new-example-textarea" rows="2" cols="40" placeholder="Usage example"></textarea><br>
-        <textarea id="new-example-alt-textarea" rows="1" cols="40" placeholder="Image caption"></textarea><br>
-        <textarea id="new-example-youtube-textarea" rows="1" cols="40" placeholder="YouTube link"></textarea><br>
-        <button class="edit-example" onclick="saveNewExample()">Save</button><br>
+        <textarea id="new-example-textarea" rows="2" cols="40" placeholder="${uiText("usageExample")}"></textarea><br>
+        <textarea id="new-example-alt-textarea" rows="1" cols="40" placeholder="${uiText("imageCaption")}"></textarea><br>
+        <textarea id="new-example-youtube-textarea" rows="1" cols="40" placeholder="${uiText("youtubeLink")}"></textarea><br>
+        <button class="edit-example" onclick="saveNewExample()">${uiText("save")}</button><br>
     `;
     examplesContainer.appendChild(newExampleDiv);
     document.getElementById('definition-box').style.display = 'block'; // Keep the definition box visible
@@ -908,7 +945,7 @@ function saveNewExample() {
         saveCurrentWords();
         showDefinition(word);
     } else {
-        alert("Das Beispiel darf nicht leer sein.");
+        alert(uiText("exampleEmptyAlert"));
     }
 }
 
@@ -986,12 +1023,12 @@ function updateWordsFromCSV(csvData) {
     allWords = updatedWords;
     saveCurrentWords();
     refreshWordList();
-    alert("Words updated successfully!");
+    alert(uiText("wordsUpdatedAlert"));
 }
 function handleCSVUpload(event) {
     const file = event.target.files[0]; 
     if (!file) {
-        alert("Please select a CSV file to upload.");
+        alert(uiText("selectCsvAlert"));
         return;
     }
     const reader = new FileReader(); 
@@ -1010,11 +1047,11 @@ function uploadExampleImage(index, word) {
 function handleImageUpload(event, exampleId, word) {
     const file = event.target.files[0]; // Get the selected file
     if (!file) {
-        alert("No file selected!");
+        alert(uiText("noFileAlert"));
         return;
     }
     if (!file.type.startsWith('image/')) {
-        alert("Please upload a valid image file.");
+        alert(uiText("invalidImageAlert"));
         return;
     }
     const reader = new FileReader();
@@ -1030,7 +1067,7 @@ function saveImageToStorage(exampleId, word, imageDataUrl) {
         image: imageDataUrl
     };
     localStorage.setItem('exampleImages', JSON.stringify(storedImages));
-    alert("Image saved successfully for word: " + word);
+    alert(uiText("imageSavedAlert", { word }));
     loadImages(word);
 }
 function renderImage(exampleId, imageDataUrl) {
@@ -1039,7 +1076,7 @@ function renderImage(exampleId, imageDataUrl) {
     imageContainer.innerHTML = ''; // Clear previous images, if any
     const img = document.createElement('img');
     img.src = imageDataUrl; // Set the src to the uploaded image data URL
-    img.alt = 'Uploaded Example Image'; // Optional alt text
+    img.alt = uiText("imageAlt");
     img.style.maxWidth = '300px'; // Limit width for better visibility
     img.style.display = 'block'; // Ensure the image displays as a block element
     img.style.marginTop = '10px'; // Add some margin for aesthetics
@@ -1187,13 +1224,14 @@ function initialize() {
     document.getElementById("open-language-settings").onclick = openLearningLanguageSettings;
     document.getElementById("save-learning-language").onclick = saveLearningLanguage;
     document.getElementById("cancel-learning-language").onclick = cancelLearningLanguageChange;
+    applyInterfaceLanguage();
     renderLearningLanguageOptions();
     showReadView();
     const firstRun = !hasSelectedLearningLanguage;
     document.getElementById("language-picker").hidden = !firstRun;
     document.getElementById("open-language-settings").setAttribute("aria-expanded", String(firstRun));
     document.getElementById("save-learning-language").textContent =
-        firstRun ? "Start learning" : "Save language";
+        firstRun ? uiText("startLearning") : uiText("saveLanguage");
     document.getElementById("cancel-learning-language").hidden = firstRun;
     updateLanguageMenuLabel();
     applyLearningLanguageAttributes();
