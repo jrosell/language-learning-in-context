@@ -14,8 +14,11 @@ With the app, you can:
 - Edit, import and export a separate vocabulary list for each learning language using CSV.
 - Save vocabulary and example images in your browser.
 
+The welcome text is “The first day”, a short greeting dialogue between Alex and Mia in all twelve languages. It introduces student and teacher vocabulary and is intended for about a minute of listening, depending on the voice and reading speed. Each dialogue turn is a separate paragraph. Existing, unedited welcome greetings are upgraded to the story; edited welcome texts and personal texts are kept.
+
 Word segmentation follows the selected language, including Chinese text that does not use spaces between words. Arabic and Urdu text is displayed right to left. The app uses the browser's speech synthesis when available.
 
 Texts, vocabulary and example images are stored locally in the current browser. They are not synchronized across devices.
 
 [Open the app](https://jrosell.github.io/language-learning-in-context/).
+

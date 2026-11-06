@@ -1,17 +1,413 @@
 
 const learningLanguages = {
-    de: { label: "Deutsch", searchLabels: ["Deutsch", "German"], locale: "de-DE", wiktionary: "de", direction: "ltr", sample: "Guten Tag!" },
-    en: { label: "English", searchLabels: ["English"], locale: "en", wiktionary: "en", direction: "ltr", sample: "Hello!" },
-    ca: { label: "Català", searchLabels: ["Català", "Catalan"], locale: "ca-ES", wiktionary: "ca", direction: "ltr", sample: "Bon dia. Com estàs avui?" },
-    vi: { label: "Tiếng Việt", searchLabels: ["Tiếng Việt", "Vietnamese"], locale: "vi-VN", wiktionary: "vi", direction: "ltr", sample: "Xin chào!" },
-    zh: { label: "中文（简体）", searchLabels: ["中文", "简体中文", "Chinese", "Chinese Simplified"], locale: "zh-CN", wiktionary: "zh", direction: "ltr", sample: "你好！" },
-    ar: { label: "العربية", searchLabels: ["العربية", "Arabic"], locale: "ar", wiktionary: "ar", direction: "rtl", sample: "مرحبًا!" },
-    ur: { label: "اردو", searchLabels: ["اردو", "Urdu"], locale: "ur-PK", wiktionary: "ur", direction: "rtl", sample: "السلام علیکم!" },
-    ru: { label: "Русский", searchLabels: ["Русский", "Russian"], locale: "ru-RU", wiktionary: "ru", direction: "ltr", sample: "Привет!" },
-    hi: { label: "हिन्दी", searchLabels: ["हिन्दी", "हिंदी", "Hindi"], locale: "hi-IN", wiktionary: "hi", direction: "ltr", sample: "नमस्ते!" },
-    fr: { label: "Français", searchLabels: ["Français", "French"], locale: "fr-FR", wiktionary: "fr", direction: "ltr", sample: "Bonjour !" },
-    es: { label: "Español", searchLabels: ["Español", "Spanish"], locale: "es-ES", wiktionary: "es", direction: "ltr", sample: "¡Hola!" },
-    fil: { label: "Filipino", searchLabels: ["Filipino"], locale: "fil-PH", wiktionary: "tl", direction: "ltr", sample: "Kumusta!" }
+    de: {
+        label: "Deutsch",
+        searchLabels: ["Deutsch","German"],
+        locale: "de-DE",
+        wiktionary: "de",
+        direction: "ltr",
+        legacySample: "Guten Tag!",
+        sample: [
+            "—Guten Morgen!",
+            "—Hallo, wie heißt du?",
+            "—Ich heiße Alex. Und du?",
+            "—Ich heiße Mia. Freut mich!",
+            "—Mich auch. Bist du neu hier?",
+            "—Ja, heute ist mein erster Tag.",
+            "—Für mich auch.",
+            "—Bist du Schüler?",
+            "—Ja, ich bin Schüler. Ich bin etwas nervös.",
+            "—Ich auch.",
+            "—Warum?",
+            "—Weil ich niemanden kenne.",
+            "—Jetzt kennst du mich!",
+            "—Stimmt. Wie geht es dir jetzt?",
+            "—Besser, danke. Wo ist die Lehrerin?",
+            "—Sie ist hier.",
+            "—Wo? Ich sehe sie nicht.",
+            "—Das bin ich!",
+            "—Sie sind die Lehrerin?",
+            "—Ja, ich bin die Lehrerin.",
+            "—Und Sie sind auch nervös?",
+            "—Ja, es ist auch mein erster Tag.",
+            "—Dann lernen wir heute beide!",
+            "—Ja, willkommen im Unterricht!"
+        ].join("\n\n")
+    },
+    en: {
+        label: "English",
+        searchLabels: ["English"],
+        locale: "en",
+        wiktionary: "en",
+        direction: "ltr",
+        legacySample: "Hello!",
+        sample: [
+            "—Good morning!",
+            "—Hello, what's your name?",
+            "—My name is Alex. And you?",
+            "—My name is Mia. Nice to meet you!",
+            "—Nice to meet you too. Are you new here?",
+            "—Yes, today is my first day.",
+            "—Mine too.",
+            "—Are you a student?",
+            "—Yes, I'm a student. I'm a little nervous.",
+            "—Me too.",
+            "—Why?",
+            "—Because I don't know anyone.",
+            "—Now you know me!",
+            "—That's true. How are you feeling now?",
+            "—Better, thank you. Where is the teacher?",
+            "—She's here.",
+            "—Where? I can't see her.",
+            "—It's me!",
+            "—You're the teacher?",
+            "—Yes, I'm the teacher.",
+            "—And you're nervous too?",
+            "—Yes, it's my first day too.",
+            "—Then we're both learning today!",
+            "—Yes, welcome to class!"
+        ].join("\n\n")
+    },
+    ca: {
+        label: "Català",
+        searchLabels: ["Català","Catalan"],
+        locale: "ca-ES",
+        wiktionary: "ca",
+        direction: "ltr",
+        legacySample: "Bon dia. Com estàs avui?",
+        sample: [
+            "—Bon dia!",
+            "—Hola, com et dius?",
+            "—Em dic Àlex. I tu?",
+            "—Em dic Mia. Encantada!",
+            "—Encantat. Ets nova aquí?",
+            "—Sí, avui és el meu primer dia.",
+            "—El meu també.",
+            "—Ets estudiant?",
+            "—Sí, soc estudiant. Estic una mica nerviós.",
+            "—Jo també.",
+            "—Per què?",
+            "—Perquè no conec ningú.",
+            "—Ara ja em coneixes a mi!",
+            "—És veritat. Com estàs ara?",
+            "—Millor, gràcies. On és la professora?",
+            "—És aquí.",
+            "—On? No la veig.",
+            "—Soc jo!",
+            "—Tu ets la professora?",
+            "—Sí, soc la professora.",
+            "—I també estàs nerviosa?",
+            "—Sí, per a mi també és el primer dia.",
+            "—Doncs avui aprenem tots dos!",
+            "—Sí, benvingut a classe!"
+        ].join("\n\n")
+    },
+    vi: {
+        label: "Tiếng Việt",
+        searchLabels: ["Tiếng Việt","Vietnamese"],
+        locale: "vi-VN",
+        wiktionary: "vi",
+        direction: "ltr",
+        legacySample: "Xin chào!",
+        sample: [
+            "—Chào buổi sáng!",
+            "—Chào bạn, bạn tên là gì?",
+            "—Mình tên là Alex. Còn bạn?",
+            "—Mình tên là Mia. Rất vui được gặp bạn!",
+            "—Mình cũng vậy. Bạn mới đến đây à?",
+            "—Ừ, hôm nay là ngày đầu tiên của mình.",
+            "—Mình cũng vậy.",
+            "—Bạn là học sinh à?",
+            "—Ừ, mình là học sinh. Mình hơi lo.",
+            "—Mình cũng vậy.",
+            "—Tại sao?",
+            "—Vì mình không quen ai cả.",
+            "—Bây giờ bạn quen mình rồi!",
+            "—Đúng rồi. Bây giờ bạn thấy thế nào?",
+            "—Đỡ hơn rồi, cảm ơn bạn. Cô giáo ở đâu?",
+            "—Cô ấy ở đây.",
+            "—Ở đâu? Mình không thấy cô ấy.",
+            "—Là mình đây!",
+            "—Cô là cô giáo ạ?",
+            "—Đúng rồi, cô là cô giáo.",
+            "—Cô cũng lo ạ?",
+            "—Ừ, hôm nay cũng là ngày đầu tiên của cô.",
+            "—Vậy hôm nay cả hai cùng học ạ!",
+            "—Đúng rồi, chào mừng em đến lớp!"
+        ].join("\n\n")
+    },
+    zh: {
+        label: "中文（简体）",
+        searchLabels: ["中文","简体中文","Chinese","Chinese Simplified"],
+        locale: "zh-CN",
+        wiktionary: "zh",
+        direction: "ltr",
+        legacySample: "你好！",
+        sample: [
+            "—早上好！",
+            "—你好，你叫什么名字？",
+            "—我叫亚历克斯，你呢？",
+            "—我叫米娅，很高兴认识你！",
+            "—我也很高兴，你是新来的吗？",
+            "—是的，今天是我的第一天。",
+            "—我也是。",
+            "—你是学生吗？",
+            "—是的，我是学生，我有点紧张。",
+            "—我也是。",
+            "—为什么？",
+            "—因为我谁也不认识。",
+            "—现在你认识我了！",
+            "—是啊，你现在感觉怎么样？",
+            "—好一点了，谢谢，老师在哪里？",
+            "—她就在这里。",
+            "—在哪里？我没看见她。",
+            "—就是我！",
+            "—您是老师？",
+            "—是的，我是老师。",
+            "—您也紧张吗？",
+            "—是的，今天也是我的第一天。",
+            "—那我们今天都要学习了！",
+            "—是的，欢迎来上课！"
+        ].join("\n\n")
+    },
+    ar: {
+        label: "العربية",
+        searchLabels: ["العربية","Arabic"],
+        locale: "ar",
+        wiktionary: "ar",
+        direction: "rtl",
+        legacySample: "مرحبًا!",
+        sample: [
+            "—صباح الخير!",
+            "—مرحبًا، ما اسمك؟",
+            "—اسمي أليكس. وأنتِ؟",
+            "—اسمي ميا. تشرفت بمعرفتك!",
+            "—وأنا أيضًا. هل أنتِ جديدة هنا؟",
+            "—نعم، اليوم هو يومي الأول.",
+            "—وأنا أيضًا.",
+            "—هل أنت طالب؟",
+            "—نعم، أنا طالب. أنا متوتر قليلًا.",
+            "—وأنا أيضًا.",
+            "—لماذا؟",
+            "—لأنني لا أعرف أحدًا.",
+            "—الآن تعرفينني!",
+            "—صحيح. كيف تشعر الآن؟",
+            "—أفضل، شكرًا. أين المعلمة؟",
+            "—هي هنا.",
+            "—أين؟ لا أراها.",
+            "—أنا هي!",
+            "—أنتِ المعلمة؟",
+            "—نعم، أنا المعلمة.",
+            "—وأنتِ متوترة أيضًا؟",
+            "—نعم، إنه يومي الأول أيضًا.",
+            "—إذن نتعلم معًا اليوم!",
+            "—نعم، أهلًا بك في الصف!"
+        ].join("\n\n")
+    },
+    ur: {
+        label: "اردو",
+        searchLabels: ["اردو","Urdu"],
+        locale: "ur-PK",
+        wiktionary: "ur",
+        direction: "rtl",
+        legacySample: "السلام علیکم!",
+        sample: [
+            "—صبح بخیر!",
+            "—سلام، تمہارا نام کیا ہے؟",
+            "—میرا نام الیکس ہے۔ تمہارا؟",
+            "—میرا نام میا ہے۔ تم سے مل کر خوشی ہوئی!",
+            "—مجھے بھی۔ کیا تم یہاں نئی ہو؟",
+            "—ہاں، آج میرا پہلا دن ہے۔",
+            "—میرا بھی۔",
+            "—کیا تم طالب علم ہو؟",
+            "—ہاں، میں طالب علم ہوں۔ میں تھوڑا گھبرایا ہوا ہوں۔",
+            "—میں بھی۔",
+            "—کیوں؟",
+            "—کیونکہ میں کسی کو نہیں جانتی۔",
+            "—اب تم مجھے جانتی ہو!",
+            "—یہ تو سچ ہے۔ اب تم کیسا محسوس کر رہے ہو؟",
+            "—بہتر، شکریہ۔ استانی کہاں ہیں؟",
+            "—وہ یہیں ہیں۔",
+            "—کہاں؟ مجھے وہ نظر نہیں آ رہیں۔",
+            "—میں ہی ہوں!",
+            "—آپ استانی ہیں؟",
+            "—ہاں، میں استانی ہوں۔",
+            "—کیا آپ بھی گھبرائی ہوئی ہیں؟",
+            "—ہاں، میرا بھی پہلا دن ہے۔",
+            "—تو آج ہم دونوں سیکھیں گے!",
+            "—ہاں، کلاس میں خوش آمدید!"
+        ].join("\n\n")
+    },
+    ru: {
+        label: "Русский",
+        searchLabels: ["Русский","Russian"],
+        locale: "ru-RU",
+        wiktionary: "ru",
+        direction: "ltr",
+        legacySample: "Привет!",
+        sample: [
+            "—Доброе утро!",
+            "—Привет, как тебя зовут?",
+            "—Меня зовут Алекс. А тебя?",
+            "—Меня зовут Мия. Приятно познакомиться!",
+            "—Мне тоже. Ты здесь новенькая?",
+            "—Да, сегодня мой первый день.",
+            "—У меня тоже.",
+            "—Ты ученик?",
+            "—Да, я ученик. Я немного волнуюсь.",
+            "—Я тоже.",
+            "—Почему?",
+            "—Потому что я никого не знаю.",
+            "—Теперь ты знаешь меня!",
+            "—Верно. Как ты сейчас себя чувствуешь?",
+            "—Лучше, спасибо. Где учительница?",
+            "—Она здесь.",
+            "—Где? Я её не вижу.",
+            "—Это я!",
+            "—Вы учительница?",
+            "—Да, я учительница.",
+            "—И вы тоже волнуетесь?",
+            "—Да, у меня тоже первый день.",
+            "—Значит, сегодня мы оба учимся!",
+            "—Да, добро пожаловать на урок!"
+        ].join("\n\n")
+    },
+    hi: {
+        label: "हिन्दी",
+        searchLabels: ["हिन्दी","हिंदी","Hindi"],
+        locale: "hi-IN",
+        wiktionary: "hi",
+        direction: "ltr",
+        legacySample: "नमस्ते!",
+        sample: [
+            "—नमस्ते!",
+            "—नमस्ते, तुम्हारा नाम क्या है?",
+            "—मेरा नाम एलेक्स है। और तुम्हारा?",
+            "—मेरा नाम मिया है। तुमसे मिलकर अच्छा लगा!",
+            "—मुझे भी। क्या तुम यहाँ नई हो?",
+            "—हाँ, आज मेरा पहला दिन है।",
+            "—मेरा भी।",
+            "—क्या तुम छात्र हो?",
+            "—हाँ, मैं छात्र हूँ। मैं थोड़ा घबराया हुआ हूँ।",
+            "—मैं भी।",
+            "—क्यों?",
+            "—क्योंकि मैं किसी को नहीं जानती।",
+            "—अब तुम मुझे जानती हो!",
+            "—सही कहा। अब तुम्हें कैसा लग रहा है?",
+            "—बेहतर, धन्यवाद। शिक्षिका कहाँ हैं?",
+            "—वह यहीं हैं।",
+            "—कहाँ? मुझे वह दिखाई नहीं दे रहीं।",
+            "—वह मैं हूँ!",
+            "—आप शिक्षिका हैं?",
+            "—हाँ, मैं शिक्षिका हूँ।",
+            "—और आप भी घबराई हुई हैं?",
+            "—हाँ, मेरा भी पहला दिन है।",
+            "—तो आज हम दोनों सीखेंगे!",
+            "—हाँ, कक्षा में तुम्हारा स्वागत है!"
+        ].join("\n\n")
+    },
+    fr: {
+        label: "Français",
+        searchLabels: ["Français","French"],
+        locale: "fr-FR",
+        wiktionary: "fr",
+        direction: "ltr",
+        legacySample: "Bonjour !",
+        sample: [
+            "—Bonjour !",
+            "—Salut, comment tu t'appelles ?",
+            "—Je m'appelle Alex. Et toi ?",
+            "—Je m'appelle Mia. Enchantée !",
+            "—Enchanté. Tu es nouvelle ici ?",
+            "—Oui, c'est mon premier jour.",
+            "—Moi aussi.",
+            "—Tu es élève ?",
+            "—Oui, je suis élève. Je suis un peu nerveux.",
+            "—Moi aussi.",
+            "—Pourquoi ?",
+            "—Parce que je ne connais personne.",
+            "—Maintenant, tu me connais !",
+            "—C'est vrai. Comment tu te sens maintenant ?",
+            "—Mieux, merci. Où est la professeure ?",
+            "—Elle est ici.",
+            "—Où ? Je ne la vois pas.",
+            "—C'est moi !",
+            "—Vous êtes la professeure ?",
+            "—Oui, je suis la professeure.",
+            "—Et vous êtes nerveuse aussi ?",
+            "—Oui, c'est aussi mon premier jour.",
+            "—Alors, on apprend tous les deux aujourd'hui !",
+            "—Oui, bienvenue en classe !"
+        ].join("\n\n")
+    },
+    es: {
+        label: "Español",
+        searchLabels: ["Español","Spanish"],
+        locale: "es-ES",
+        wiktionary: "es",
+        direction: "ltr",
+        legacySample: "¡Hola!",
+        sample: [
+            "—¡Buenos días!",
+            "—Hola, ¿cómo te llamas?",
+            "—Me llamo Álex. ¿Y tú?",
+            "—Me llamo Mia. ¡Encantada!",
+            "—Encantado. ¿Eres nueva aquí?",
+            "—Sí, hoy es mi primer día.",
+            "—El mío también.",
+            "—¿Eres estudiante?",
+            "—Sí, soy estudiante. Estoy un poco nervioso.",
+            "—Yo también.",
+            "—¿Por qué?",
+            "—Porque no conozco a nadie.",
+            "—¡Ahora ya me conoces a mí!",
+            "—Es verdad. ¿Cómo estás ahora?",
+            "—Mejor, gracias. ¿Dónde está la profesora?",
+            "—Está aquí.",
+            "—¿Dónde? No la veo.",
+            "—¡Soy yo!",
+            "—¿Tú eres la profesora?",
+            "—Sí, soy la profesora.",
+            "—¿Y tú también estás nerviosa?",
+            "—Sí, para mí también es el primer día.",
+            "—¡Pues hoy aprendemos los dos!",
+            "—¡Sí, bienvenido a clase!"
+        ].join("\n\n")
+    },
+    fil: {
+        label: "Filipino",
+        searchLabels: ["Filipino"],
+        locale: "fil-PH",
+        wiktionary: "tl",
+        direction: "ltr",
+        legacySample: "Kumusta!",
+        sample: [
+            "—Magandang umaga!",
+            "—Kumusta, ano ang pangalan mo?",
+            "—Alex ang pangalan ko. Ikaw?",
+            "—Mia ang pangalan ko. Masaya akong makilala ka!",
+            "—Ako rin. Bago ka ba rito?",
+            "—Oo, unang araw ko ngayon.",
+            "—Ako rin.",
+            "—Estudyante ka ba?",
+            "—Oo, estudyante ako. Medyo kinakabahan ako.",
+            "—Ako rin.",
+            "—Bakit?",
+            "—Dahil wala akong kakilala.",
+            "—Kilala mo na ako ngayon!",
+            "—Tama. Kumusta ka na ngayon?",
+            "—Mas mabuti na, salamat. Nasaan ang guro?",
+            "—Narito siya.",
+            "—Saan? Hindi ko siya makita.",
+            "—Ako iyon!",
+            "—Kayo po ang guro?",
+            "—Oo, ako ang guro.",
+            "—Kinakabahan din po kayo?",
+            "—Oo, unang araw ko rin.",
+            "—Kung ganoon, pareho tayong matututo ngayon!",
+            "—Oo, maligayang pagdating sa klase!"
+        ].join("\n\n")
+    }
 };
 
 const savedLanguage = localStorage.getItem("learning_language");
@@ -69,7 +465,25 @@ function loadTextDocuments() {
                         : 0,
                     isStarter: Boolean(document.isStarter)
                 }));
-            if (documents.length) return documents;
+            if (documents.length) {
+                const legacySamples = new Set(Object.values(learningLanguages).map(language => language.legacySample));
+                let upgraded = false;
+                documents.forEach(document => {
+                    if (document.isStarter && legacySamples.has(document.content.trim())) {
+                        document.content = learningLanguages[currentLanguage].sample;
+                        document.activeSentenceIndex = 0;
+                        upgraded = true;
+                    }
+                });
+                if (upgraded) {
+                    try {
+                        localStorage.setItem(TEXT_DOCUMENTS_STORAGE_KEY, JSON.stringify(documents));
+                    } catch (error) {
+                        console.warn("Could not save the updated welcome text.", error);
+                    }
+                }
+                return documents;
+            }
         }
     } catch (error) {
         console.warn("Could not read saved texts.", error);
@@ -374,6 +788,7 @@ function saveLearningLanguage() {
     const newSample = learningLanguages[currentLanguage].sample;
     if (untouchedWelcomeText) {
         untouchedWelcomeText.content = newSample;
+        if (previousLanguage !== currentLanguage) untouchedWelcomeText.activeSentenceIndex = 0;
         const defaultWelcomeTitles = Object.values(window.uiTranslations || {})
             .map(translations => translations.welcomeTitle);
         if (defaultWelcomeTitles.includes(untouchedWelcomeText.title)) {
@@ -409,15 +824,23 @@ function splitTextIntoSentences(text) {
     }
 
     if (!rawSegments.length && text.trim()) {
-        rawSegments = text.match(/[^.!?。！？]+[.!?。！？]*\s*/g) || [text];
+        rawSegments = text.match(/[^.!?。！？؟۔।]+[.!?。！？؟۔।]*\s*/g) || [text];
     }
 
-    return rawSegments.map(segment => {
-        const leading = (segment.match(/^\s*/) || [""])[0];
+    const sentences = [];
+    let pendingWhitespace = "";
+    rawSegments.forEach(segment => {
+        if (!segment.trim()) {
+            pendingWhitespace += segment;
+            return;
+        }
+        const prefix = (segment.match(/^\s*/) || [""])[0];
         const trailing = (segment.match(/\s*$/) || [""])[0];
         const end = segment.length - trailing.length;
-        return { leading, text: segment.slice(leading.length, end), trailing };
-    }).filter(segment => segment.text.trim());
+        sentences.push({ leading: pendingWhitespace + prefix, text: segment.slice(prefix.length, end), trailing });
+        pendingWhitespace = trailing;
+    });
+    return sentences;
 }
 
 function getTextTitle(content) {
@@ -1241,5 +1664,6 @@ function initialize() {
 }
 
 initialize();
+
 
 

@@ -61,10 +61,36 @@ async function runAction(page, action) {
     await tab.locator(".text-tab__close").tap();
     return;
   }
+  if (action.type === "read-welcome-language") {
+    await page.locator("#open-language-settings").tap();
+    await page.locator("#learning-language-search").fill("");
+    await page.locator(".language-option").filter({
+      has: page.locator("input[value='" + action.language + "']")
+    }).tap();
+    await page.locator("#save-learning-language").tap();
+    await page.locator("#add-text-tab").tap();
+    const starter = page.locator("#saved-text-list > li").filter({
+      hasNot: page.locator(".saved-text-list__delete")
+    });
+    await starter.locator(".saved-text-list__actions button").first().tap();
+    return;
+  }
   throw new Error("Unsupported action type: " + action.type);
 }
 
 async function runAssertion(page, assertion) {
+  if (assertion.type === "welcome-dialogue") {
+    const result = await page.evaluate(() => ({
+      turns: Array.from(document.querySelectorAll(".text-sentence__content"))
+        .filter(sentence => sentence.textContent.startsWith("—")).length,
+      paragraphBreaks: document.querySelectorAll(".text-sentence--paragraph-start").length,
+      activeSentence: document.querySelector(".text-sentence.is-active")?.dataset.sentenceIndex
+    }));
+    assert.equal(result.turns, 24, "the welcome story should include all dialogue turns");
+    assert.equal(result.paragraphBreaks, 23, "dialogue turns should remain separate paragraphs");
+    assert.equal(result.activeSentence, "0", "a new welcome language should start at the first sentence");
+    return;
+  }
   if (assertion.type === "visible") {
     await page.locator(assertion.selector).first().waitFor({ state: "visible" });
     return;
@@ -223,3 +249,4 @@ main().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
+
