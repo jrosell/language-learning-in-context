@@ -1116,7 +1116,49 @@ function deleteTextDocument(id) {
     renderSavedTextList();
 }
 
+function setTextManagerExpanded(expanded) {
+    const panel = document.querySelector(".text-container");
+    const handle = document.getElementById("text-manager-handle");
+    panel.classList.toggle("is-expanded", expanded);
+    handle.setAttribute("aria-expanded", String(expanded));
+}
+
+function initializeTextManagerHandle() {
+    const handle = document.getElementById("text-manager-handle");
+    let startY = null;
+    let ignoreClick = false;
+
+    handle.addEventListener("pointerdown", event => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        startY = event.clientY;
+        handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointerup", event => {
+        if (startY === null) return;
+        const movement = event.clientY - startY;
+        startY = null;
+        if (Math.abs(movement) < 40) return;
+
+        setTextManagerExpanded(movement < 0);
+        ignoreClick = true;
+        window.setTimeout(() => {
+            ignoreClick = false;
+        }, 0);
+    });
+    handle.addEventListener("pointercancel", () => {
+        startY = null;
+    });
+    handle.addEventListener("click", () => {
+        if (ignoreClick) {
+            ignoreClick = false;
+            return;
+        }
+        setTextManagerExpanded(handle.getAttribute("aria-expanded") !== "true");
+    });
+}
+
 function openTextManager() {
+    setTextManagerExpanded(false);
     stopTextPlayback();
     document.querySelector(".text-container").style.display = "block";
     document.querySelector(".words-container").style.display = "none";
@@ -1127,6 +1169,7 @@ function openTextManager() {
 
 function closeTextManager() {
     if (!confirmDiscardTextEditorChanges()) return;
+    setTextManagerExpanded(false);
     document.getElementById("text-editor").hidden = true;
     editingTextId = null;
     showReadView();
@@ -1676,6 +1719,7 @@ function initialize() {
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'none';
     };    
+    initializeTextManagerHandle();
     document.getElementById('close-text-manager').onclick = closeTextManager;
     document.getElementById('new-text-button').onclick = startNewTextEditor;
     document.getElementById('add-text-tab').onclick = function() {

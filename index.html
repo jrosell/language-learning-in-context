@@ -58,7 +58,8 @@
             <p><span data-i18n="aboutFeedback">Send feedback or contribute on </span><a href="https://github.com/jrosell/language-learning-in-context/">GitHub</a>.</p>
             <p><span data-i18n="aboutClosing">I hope you enjoy it!</span><br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
-        <div class="text-container" style="display:none;">
+        <div class="text-container" id="text-manager" style="display:none;">
+            <button type="button" id="text-manager-handle" class="text-container__handle" aria-controls="text-manager" aria-expanded="false" aria-label="Expand or collapse the text manager" title="Expand or collapse the text manager" data-i18n-aria-label="toggleTextManagerSize" data-i18n-title="toggleTextManagerSize"></button>
             <div class="text-container__header">
                 <h1 data-i18n="textsTitle">Texts</h1>
                 <button type="button" id="close-text-manager" class="panel-close" aria-label="Close text manager" title="Close" data-i18n-aria-label="closeTextManager" data-i18n-title="closeTextManager">×</button>
