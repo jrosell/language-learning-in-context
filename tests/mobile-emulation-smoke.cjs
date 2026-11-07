@@ -81,13 +81,16 @@ async function runAction(page, action) {
 async function runAssertion(page, assertion) {
   if (assertion.type === "welcome-dialogue") {
     const result = await page.evaluate(() => ({
-      turns: Array.from(document.querySelectorAll(".text-sentence__content"))
-        .filter(sentence => sentence.textContent.startsWith("—")).length,
+      speakers: Array.from(document.querySelectorAll(".text-sentence__content"))
+        .filter(sentence => /[:：]/u.test(sentence.textContent))
+        .map(sentence => sentence.textContent.split(/[:：]/u)[0].trim()),
       paragraphBreaks: document.querySelectorAll(".text-sentence--paragraph-start").length,
       activeSentence: document.querySelector(".text-sentence.is-active")?.dataset.sentenceIndex
     }));
-    assert.equal(result.turns, 24, "the welcome story should include all dialogue turns");
-    assert.equal(result.paragraphBreaks, 23, "dialogue turns should remain separate paragraphs");
+    assert.equal(result.speakers.length, 3, "the welcome dialogue should have three labelled turns");
+    assert.equal(result.speakers[0], result.speakers[2], "Laura should speak first and last");
+    assert.notEqual(result.speakers[0], result.speakers[1], "Marta should speak second");
+    assert.equal(result.paragraphBreaks, 2, "dialogue turns should remain separate paragraphs");
     assert.equal(result.activeSentence, "0", "a new welcome language should start at the first sentence");
     return;
   }

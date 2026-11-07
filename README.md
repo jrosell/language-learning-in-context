@@ -14,7 +14,7 @@ With the app, you can:
 - Edit, import and export a separate vocabulary list for each learning language using CSV.
 - Save vocabulary and example images in your browser.
 
-The welcome text is “The first day”, a short greeting dialogue between Alex and Mia in all twelve languages. It introduces student and teacher vocabulary and is intended for about a minute of listening, depending on the voice and reading speed. Each dialogue turn is a separate paragraph. Existing, unedited welcome greetings are upgraded to the story; edited welcome texts and personal texts are kept.
+The welcome text is a three-turn dialogue between Laura and Marta in all twelve languages. Laura asks Marta's name, Marta introduces herself as a student, and Laura welcomes her and introduces herself as a teacher. The dialogue repeats a morning greeting and simple introductions, with speaker names visible on each turn. Original welcome greetings and the longer “The first day” dialogue are upgraded to this simpler version when unedited; edited welcome texts and personal texts are kept.
 
 Word segmentation follows the selected language, including Chinese text that does not use spaces between words. Arabic and Urdu text is displayed right to left. The app uses the browser's speech synthesis when available.
 

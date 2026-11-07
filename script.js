@@ -7,7 +7,7 @@ const learningLanguages = {
         wiktionary: "de",
         direction: "ltr",
         legacySample: "Guten Tag!",
-        sample: [
+        previousSample: [
             "—Guten Morgen!",
             "—Hallo, wie heißt du?",
             "—Ich heiße Alex. Und du?",
@@ -32,6 +32,11 @@ const learningLanguages = {
             "—Ja, es ist auch mein erster Tag.",
             "—Dann lernen wir heute beide!",
             "—Ja, willkommen im Unterricht!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: Guten Morgen! Wie heißt du?",
+            "Marta: Guten Morgen! Ich bin Marta. Ich bin Schülerin.",
+            "Laura: Willkommen, Marta! Ich bin Laura. Ich bin Lehrerin."
         ].join("\n\n")
     },
     en: {
@@ -41,7 +46,7 @@ const learningLanguages = {
         wiktionary: "en",
         direction: "ltr",
         legacySample: "Hello!",
-        sample: [
+        previousSample: [
             "—Good morning!",
             "—Hello, what's your name?",
             "—My name is Alex. And you?",
@@ -66,6 +71,11 @@ const learningLanguages = {
             "—Yes, it's my first day too.",
             "—Then we're both learning today!",
             "—Yes, welcome to class!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: Good morning! What's your name?",
+            "Marta: Good morning! I'm Marta. I'm a student.",
+            "Laura: Welcome, Marta! I'm Laura. I'm a teacher."
         ].join("\n\n")
     },
     ca: {
@@ -75,7 +85,7 @@ const learningLanguages = {
         wiktionary: "ca",
         direction: "ltr",
         legacySample: "Bon dia. Com estàs avui?",
-        sample: [
+        previousSample: [
             "—Bon dia!",
             "—Hola, com et dius?",
             "—Em dic Àlex. I tu?",
@@ -100,6 +110,11 @@ const learningLanguages = {
             "—Sí, per a mi també és el primer dia.",
             "—Doncs avui aprenem tots dos!",
             "—Sí, benvingut a classe!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: Bon dia! Com et dius?",
+            "Marta: Bon dia! Soc la Marta. Soc estudiant.",
+            "Laura: Benvinguda, Marta! Soc la Laura. Soc mestra."
         ].join("\n\n")
     },
     vi: {
@@ -109,7 +124,7 @@ const learningLanguages = {
         wiktionary: "vi",
         direction: "ltr",
         legacySample: "Xin chào!",
-        sample: [
+        previousSample: [
             "—Chào buổi sáng!",
             "—Chào bạn, bạn tên là gì?",
             "—Mình tên là Alex. Còn bạn?",
@@ -134,6 +149,11 @@ const learningLanguages = {
             "—Ừ, hôm nay cũng là ngày đầu tiên của cô.",
             "—Vậy hôm nay cả hai cùng học ạ!",
             "—Đúng rồi, chào mừng em đến lớp!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: Chào buổi sáng! Bạn tên là gì?",
+            "Marta: Chào buổi sáng! Tôi là Marta. Tôi là học sinh.",
+            "Laura: Chào mừng bạn, Marta! Tôi là Laura. Tôi là cô giáo."
         ].join("\n\n")
     },
     zh: {
@@ -143,7 +163,7 @@ const learningLanguages = {
         wiktionary: "zh",
         direction: "ltr",
         legacySample: "你好！",
-        sample: [
+        previousSample: [
             "—早上好！",
             "—你好，你叫什么名字？",
             "—我叫亚历克斯，你呢？",
@@ -168,6 +188,11 @@ const learningLanguages = {
             "—是的，今天也是我的第一天。",
             "—那我们今天都要学习了！",
             "—是的，欢迎来上课！"
+        ].join("\n\n"),
+        sample: [
+            "劳拉：早上好！你叫什么名字？",
+            "玛尔塔：早上好！我是玛尔塔。我是学生。",
+            "劳拉：欢迎你，玛尔塔！我是劳拉。我是老师。"
         ].join("\n\n")
     },
     ar: {
@@ -177,7 +202,7 @@ const learningLanguages = {
         wiktionary: "ar",
         direction: "rtl",
         legacySample: "مرحبًا!",
-        sample: [
+        previousSample: [
             "—صباح الخير!",
             "—مرحبًا، ما اسمك؟",
             "—اسمي أليكس. وأنتِ؟",
@@ -202,6 +227,11 @@ const learningLanguages = {
             "—نعم، إنه يومي الأول أيضًا.",
             "—إذن نتعلم معًا اليوم!",
             "—نعم، أهلًا بك في الصف!"
+        ].join("\n\n"),
+        sample: [
+            "لورا: صباح الخير! ما اسمكِ؟",
+            "مارتا: صباح الخير! أنا مارتا. أنا طالبة.",
+            "لورا: أهلًا بكِ، مارتا! أنا لورا. أنا معلمة."
         ].join("\n\n")
     },
     ur: {
@@ -211,7 +241,7 @@ const learningLanguages = {
         wiktionary: "ur",
         direction: "rtl",
         legacySample: "السلام علیکم!",
-        sample: [
+        previousSample: [
             "—صبح بخیر!",
             "—سلام، تمہارا نام کیا ہے؟",
             "—میرا نام الیکس ہے۔ تمہارا؟",
@@ -236,6 +266,11 @@ const learningLanguages = {
             "—ہاں، میرا بھی پہلا دن ہے۔",
             "—تو آج ہم دونوں سیکھیں گے!",
             "—ہاں، کلاس میں خوش آمدید!"
+        ].join("\n\n"),
+        sample: [
+            "لورا: صبح بخیر! تمہارا نام کیا ہے؟",
+            "مارتا: صبح بخیر! میں مارتا ہوں۔ میں طالبہ ہوں۔",
+            "لورا: خوش آمدید، مارتا! میں لورا ہوں۔ میں استانی ہوں۔"
         ].join("\n\n")
     },
     ru: {
@@ -245,7 +280,7 @@ const learningLanguages = {
         wiktionary: "ru",
         direction: "ltr",
         legacySample: "Привет!",
-        sample: [
+        previousSample: [
             "—Доброе утро!",
             "—Привет, как тебя зовут?",
             "—Меня зовут Алекс. А тебя?",
@@ -270,6 +305,11 @@ const learningLanguages = {
             "—Да, у меня тоже первый день.",
             "—Значит, сегодня мы оба учимся!",
             "—Да, добро пожаловать на урок!"
+        ].join("\n\n"),
+        sample: [
+            "Лаура: Доброе утро! Как тебя зовут?",
+            "Марта: Доброе утро! Я Марта. Я ученица.",
+            "Лаура: Добро пожаловать, Марта! Я Лаура. Я учительница."
         ].join("\n\n")
     },
     hi: {
@@ -279,7 +319,7 @@ const learningLanguages = {
         wiktionary: "hi",
         direction: "ltr",
         legacySample: "नमस्ते!",
-        sample: [
+        previousSample: [
             "—नमस्ते!",
             "—नमस्ते, तुम्हारा नाम क्या है?",
             "—मेरा नाम एलेक्स है। और तुम्हारा?",
@@ -304,6 +344,11 @@ const learningLanguages = {
             "—हाँ, मेरा भी पहला दिन है।",
             "—तो आज हम दोनों सीखेंगे!",
             "—हाँ, कक्षा में तुम्हारा स्वागत है!"
+        ].join("\n\n"),
+        sample: [
+            "लौरा: सुप्रभात! तुम्हारा नाम क्या है?",
+            "मार्टा: सुप्रभात! मैं मार्टा हूँ। मैं छात्रा हूँ।",
+            "लौरा: स्वागत है, मार्टा! मैं लौरा हूँ। मैं शिक्षिका हूँ।"
         ].join("\n\n")
     },
     fr: {
@@ -313,7 +358,7 @@ const learningLanguages = {
         wiktionary: "fr",
         direction: "ltr",
         legacySample: "Bonjour !",
-        sample: [
+        previousSample: [
             "—Bonjour !",
             "—Salut, comment tu t'appelles ?",
             "—Je m'appelle Alex. Et toi ?",
@@ -338,6 +383,11 @@ const learningLanguages = {
             "—Oui, c'est aussi mon premier jour.",
             "—Alors, on apprend tous les deux aujourd'hui !",
             "—Oui, bienvenue en classe !"
+        ].join("\n\n"),
+        sample: [
+            "Laura : Bonjour ! Comment tu t'appelles ?",
+            "Marta : Bonjour ! Je suis Marta. Je suis élève.",
+            "Laura : Bienvenue, Marta ! Je suis Laura. Je suis enseignante."
         ].join("\n\n")
     },
     es: {
@@ -347,7 +397,7 @@ const learningLanguages = {
         wiktionary: "es",
         direction: "ltr",
         legacySample: "¡Hola!",
-        sample: [
+        previousSample: [
             "—¡Buenos días!",
             "—Hola, ¿cómo te llamas?",
             "—Me llamo Álex. ¿Y tú?",
@@ -372,6 +422,11 @@ const learningLanguages = {
             "—Sí, para mí también es el primer día.",
             "—¡Pues hoy aprendemos los dos!",
             "—¡Sí, bienvenido a clase!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: ¡Buenos días! ¿Cómo te llamas?",
+            "Marta: ¡Buenos días! Soy Marta. Soy estudiante.",
+            "Laura: ¡Bienvenida, Marta! Soy Laura. Soy maestra."
         ].join("\n\n")
     },
     fil: {
@@ -381,7 +436,7 @@ const learningLanguages = {
         wiktionary: "tl",
         direction: "ltr",
         legacySample: "Kumusta!",
-        sample: [
+        previousSample: [
             "—Magandang umaga!",
             "—Kumusta, ano ang pangalan mo?",
             "—Alex ang pangalan ko. Ikaw?",
@@ -406,6 +461,11 @@ const learningLanguages = {
             "—Oo, unang araw ko rin.",
             "—Kung ganoon, pareho tayong matututo ngayon!",
             "—Oo, maligayang pagdating sa klase!"
+        ].join("\n\n"),
+        sample: [
+            "Laura: Magandang umaga! Ano ang pangalan mo?",
+            "Marta: Magandang umaga! Ako si Marta. Estudyante ako.",
+            "Laura: Maligayang pagdating, Marta! Ako si Laura. Guro ako."
         ].join("\n\n")
     }
 };
@@ -466,7 +526,8 @@ function loadTextDocuments() {
                     isStarter: Boolean(document.isStarter)
                 }));
             if (documents.length) {
-                const legacySamples = new Set(Object.values(learningLanguages).map(language => language.legacySample));
+                const legacySamples = new Set(Object.values(learningLanguages)
+                    .flatMap(language => [language.legacySample, language.previousSample]));
                 let upgraded = false;
                 documents.forEach(document => {
                     if (document.isStarter && legacySamples.has(document.content.trim())) {
