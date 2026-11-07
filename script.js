@@ -1725,7 +1725,6 @@ function initialize() {
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'none';
     };    
-    initializeTextManagerHandle();
     initializeMobileSheetHandles();
     document.getElementById('close-about-panel').onclick = showReadView;
     document.getElementById('close-vocabulary-panel').onclick = showReadView;
