@@ -538,9 +538,10 @@ function loadTextDocuments() {
                     .map(language => getWelcomeDialogueBody(language.sample)));
                 let upgraded = false;
                 documents.forEach(document => {
+                    const isCurrentWelcome = document.content.trim() === learningLanguages[currentLanguage].sample.trim();
                     const isLegacyWelcome = legacySamples.has(document.content.trim());
                     const isPreviousSpeakerFormat = welcomeDialogueBodies.has(getWelcomeDialogueBody(document.content));
-                    if (document.isStarter && (isLegacyWelcome || isPreviousSpeakerFormat)) {
+                    if (document.isStarter && !isCurrentWelcome && (isLegacyWelcome || isPreviousSpeakerFormat)) {
                         document.content = learningLanguages[currentLanguage].sample;
                         document.activeSentenceIndex = 0;
                         upgraded = true;
@@ -1725,7 +1726,6 @@ function initialize() {
         const textContainer = document.querySelector('.text-container');
         textContainer.style.display = 'none';
     };    
-    initializeTextManagerHandle();
     initializeMobileSheetHandles();
     document.getElementById('close-about-panel').onclick = showReadView;
     document.getElementById('close-vocabulary-panel').onclick = showReadView;
