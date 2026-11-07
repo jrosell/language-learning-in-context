@@ -737,6 +737,44 @@ label input[type="radio"]:checked[value="learned"] + span {
         align-items: flex-start;
     }
 
+    .text-container {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        width: 100%;
+        max-height: 68vh;
+        max-height: 68dvh;
+        margin: 0;
+        padding: 8px 18px calc(18px + env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        border-radius: 16px 16px 0 0;
+        background: #fff;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.16);
+    }
+
+    .text-container::before {
+        display: block;
+        width: 36px;
+        height: 4px;
+        margin: 0 auto 8px;
+        border-radius: 999px;
+        background: #bbb;
+        content: "";
+    }
+
+    .text-container__header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        padding: 4px 0;
+        background: #fff;
+    }
+
     .language-picker__list {
         max-height: 36vh;
         max-height: 36dvh;
