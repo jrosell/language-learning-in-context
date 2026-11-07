@@ -81,9 +81,8 @@ async function runAction(page, action) {
 async function runAssertion(page, assertion) {
   if (assertion.type === "welcome-dialogue") {
     const result = await page.evaluate(() => ({
-      speakers: Array.from(document.querySelectorAll(".text-sentence__content"))
-        .filter(sentence => /[:：]/u.test(sentence.textContent))
-        .map(sentence => sentence.textContent.split(/[:：]/u)[0].trim()),
+      speakers: Array.from(document.querySelectorAll(".text-sentence__speaker"))
+        .map(label => label.textContent.trim().replace(/:$/u, "")),
       paragraphBreaks: document.querySelectorAll(".text-sentence--paragraph-start").length,
       activeSentence: document.querySelector(".text-sentence.is-active")?.dataset.sentenceIndex
     }));

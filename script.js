@@ -34,9 +34,9 @@ const learningLanguages = {
             "—Ja, willkommen im Unterricht!"
         ].join("\n\n"),
         sample: [
-            "Laura: Guten Morgen! Wie heißt du?",
-            "Marta: Guten Morgen! Ich bin Marta. Ich bin Schülerin.",
-            "Laura: Willkommen, Marta! Ich bin Laura. Ich bin Lehrerin."
+            "[Laura] Guten Morgen! Wie heißt du?",
+            "[Marta] Guten Morgen! Ich bin Marta. Ich bin Schülerin.",
+            "[Laura] Willkommen, Marta! Ich bin Laura. Ich bin Lehrerin."
         ].join("\n\n")
     },
     en: {
@@ -73,9 +73,9 @@ const learningLanguages = {
             "—Yes, welcome to class!"
         ].join("\n\n"),
         sample: [
-            "Laura: Good morning! What's your name?",
-            "Marta: Good morning! I'm Marta. I'm a student.",
-            "Laura: Welcome, Marta! I'm Laura. I'm a teacher."
+            "[Laura] Good morning! What's your name?",
+            "[Marta] Good morning! I'm Marta. I'm a student.",
+            "[Laura] Welcome, Marta! I'm Laura. I'm a teacher."
         ].join("\n\n")
     },
     ca: {
@@ -112,9 +112,9 @@ const learningLanguages = {
             "—Sí, benvingut a classe!"
         ].join("\n\n"),
         sample: [
-            "Laura: Bon dia! Com et dius?",
-            "Marta: Bon dia! Soc la Marta. Soc estudiant.",
-            "Laura: Benvinguda, Marta! Soc la Laura. Soc mestra."
+            "[Laura] Bon dia! Com et dius?",
+            "[Marta] Bon dia! Soc la Marta. Soc estudiant.",
+            "[Laura] Benvinguda, Marta! Soc la Laura. Soc mestra."
         ].join("\n\n")
     },
     vi: {
@@ -151,9 +151,9 @@ const learningLanguages = {
             "—Đúng rồi, chào mừng em đến lớp!"
         ].join("\n\n"),
         sample: [
-            "Laura: Chào buổi sáng! Bạn tên là gì?",
-            "Marta: Chào buổi sáng! Tôi là Marta. Tôi là học sinh.",
-            "Laura: Chào mừng bạn, Marta! Tôi là Laura. Tôi là cô giáo."
+            "[Laura] Chào buổi sáng! Bạn tên là gì?",
+            "[Marta] Chào buổi sáng! Tôi là Marta. Tôi là học sinh.",
+            "[Laura] Chào mừng bạn, Marta! Tôi là Laura. Tôi là cô giáo."
         ].join("\n\n")
     },
     zh: {
@@ -190,9 +190,9 @@ const learningLanguages = {
             "—是的，欢迎来上课！"
         ].join("\n\n"),
         sample: [
-            "劳拉：早上好！你叫什么名字？",
-            "玛尔塔：早上好！我是玛尔塔。我是学生。",
-            "劳拉：欢迎你，玛尔塔！我是劳拉。我是老师。"
+            "[Laura] 早上好！你叫什么名字？",
+            "[Marta] 早上好！我是玛尔塔。我是学生。",
+            "[Laura] 欢迎你，玛尔塔！我是劳拉。我是老师。"
         ].join("\n\n")
     },
     ar: {
@@ -229,9 +229,9 @@ const learningLanguages = {
             "—نعم، أهلًا بك في الصف!"
         ].join("\n\n"),
         sample: [
-            "لورا: صباح الخير! ما اسمكِ؟",
-            "مارتا: صباح الخير! أنا مارتا. أنا طالبة.",
-            "لورا: أهلًا بكِ، مارتا! أنا لورا. أنا معلمة."
+            "[Laura] صباح الخير! ما اسمكِ؟",
+            "[Marta] صباح الخير! أنا مارتا. أنا طالبة.",
+            "[Laura] أهلًا بكِ، مارتا! أنا لورا. أنا معلمة."
         ].join("\n\n")
     },
     ur: {
@@ -268,9 +268,9 @@ const learningLanguages = {
             "—ہاں، کلاس میں خوش آمدید!"
         ].join("\n\n"),
         sample: [
-            "لورا: صبح بخیر! تمہارا نام کیا ہے؟",
-            "مارتا: صبح بخیر! میں مارتا ہوں۔ میں طالبہ ہوں۔",
-            "لورا: خوش آمدید، مارتا! میں لورا ہوں۔ میں استانی ہوں۔"
+            "[Laura] صبح بخیر! تمہارا نام کیا ہے؟",
+            "[Marta] صبح بخیر! میں مارتا ہوں۔ میں طالبہ ہوں۔",
+            "[Laura] خوش آمدید، مارتا! میں لورا ہوں۔ میں استانی ہوں۔"
         ].join("\n\n")
     },
     ru: {
@@ -307,9 +307,9 @@ const learningLanguages = {
             "—Да, добро пожаловать на урок!"
         ].join("\n\n"),
         sample: [
-            "Лаура: Доброе утро! Как тебя зовут?",
-            "Марта: Доброе утро! Я Марта. Я ученица.",
-            "Лаура: Добро пожаловать, Марта! Я Лаура. Я учительница."
+            "[Laura] Доброе утро! Как тебя зовут?",
+            "[Marta] Доброе утро! Я Марта. Я ученица.",
+            "[Laura] Добро пожаловать, Марта! Я Лаура. Я учительница."
         ].join("\n\n")
     },
     hi: {
@@ -346,9 +346,9 @@ const learningLanguages = {
             "—हाँ, कक्षा में तुम्हारा स्वागत है!"
         ].join("\n\n"),
         sample: [
-            "लौरा: सुप्रभात! तुम्हारा नाम क्या है?",
-            "मार्टा: सुप्रभात! मैं मार्टा हूँ। मैं छात्रा हूँ।",
-            "लौरा: स्वागत है, मार्टा! मैं लौरा हूँ। मैं शिक्षिका हूँ।"
+            "[Laura] सुप्रभात! तुम्हारा नाम क्या है?",
+            "[Marta] सुप्रभात! मैं मार्टा हूँ। मैं छात्रा हूँ।",
+            "[Laura] स्वागत है, मार्टा! मैं लौरा हूँ। मैं शिक्षिका हूँ।"
         ].join("\n\n")
     },
     fr: {
@@ -385,9 +385,9 @@ const learningLanguages = {
             "—Oui, bienvenue en classe !"
         ].join("\n\n"),
         sample: [
-            "Laura : Bonjour ! Comment tu t'appelles ?",
-            "Marta : Bonjour ! Je suis Marta. Je suis élève.",
-            "Laura : Bienvenue, Marta ! Je suis Laura. Je suis enseignante."
+            "[Laura] Bonjour ! Comment tu t'appelles ?",
+            "[Marta] Bonjour ! Je suis Marta. Je suis élève.",
+            "[Laura] Bienvenue, Marta ! Je suis Laura. Je suis enseignante."
         ].join("\n\n")
     },
     es: {
@@ -424,9 +424,9 @@ const learningLanguages = {
             "—¡Sí, bienvenido a clase!"
         ].join("\n\n"),
         sample: [
-            "Laura: ¡Buenos días! ¿Cómo te llamas?",
-            "Marta: ¡Buenos días! Soy Marta. Soy estudiante.",
-            "Laura: ¡Bienvenida, Marta! Soy Laura. Soy maestra."
+            "[Laura] ¡Buenos días! ¿Cómo te llamas?",
+            "[Marta] ¡Buenos días! Soy Marta. Soy estudiante.",
+            "[Laura] ¡Bienvenida, Marta! Soy Laura. Soy maestra."
         ].join("\n\n")
     },
     fil: {
@@ -463,9 +463,9 @@ const learningLanguages = {
             "—Oo, maligayang pagdating sa klase!"
         ].join("\n\n"),
         sample: [
-            "Laura: Magandang umaga! Ano ang pangalan mo?",
-            "Marta: Magandang umaga! Ako si Marta. Estudyante ako.",
-            "Laura: Maligayang pagdating, Marta! Ako si Laura. Guro ako."
+            "[Laura] Magandang umaga! Ano ang pangalan mo?",
+            "[Marta] Magandang umaga! Ako si Marta. Estudyante ako.",
+            "[Laura] Maligayang pagdating, Marta! Ako si Laura. Guro ako."
         ].join("\n\n")
     }
 };
@@ -510,6 +510,12 @@ function createTextId() {
     return "text-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
+function getWelcomeDialogueBody(content) {
+    return String(content).trim().split(/\r?\n\s*\r?\n/u)
+        .map(paragraph => paragraph.replace(/^\s*(?:\[[^\]\r\n]+\]|[^:\r\n：]+[:：])\s*/u, ""))
+        .join("\n\n");
+}
+
 function loadTextDocuments() {
     try {
         const savedDocuments = JSON.parse(localStorage.getItem(TEXT_DOCUMENTS_STORAGE_KEY));
@@ -528,9 +534,13 @@ function loadTextDocuments() {
             if (documents.length) {
                 const legacySamples = new Set(Object.values(learningLanguages)
                     .flatMap(language => [language.legacySample, language.previousSample]));
+                const welcomeDialogueBodies = new Set(Object.values(learningLanguages)
+                    .map(language => getWelcomeDialogueBody(language.sample)));
                 let upgraded = false;
                 documents.forEach(document => {
-                    if (document.isStarter && legacySamples.has(document.content.trim())) {
+                    const isLegacyWelcome = legacySamples.has(document.content.trim());
+                    const isPreviousSpeakerFormat = welcomeDialogueBodies.has(getWelcomeDialogueBody(document.content));
+                    if (document.isStarter && (isLegacyWelcome || isPreviousSpeakerFormat)) {
                         document.content = learningLanguages[currentLanguage].sample;
                         document.activeSentenceIndex = 0;
                         upgraded = true;
@@ -898,7 +908,15 @@ function splitTextIntoSentences(text) {
         const prefix = (segment.match(/^\s*/) || [""])[0];
         const trailing = (segment.match(/\s*$/) || [""])[0];
         const end = segment.length - trailing.length;
-        sentences.push({ leading: pendingWhitespace + prefix, text: segment.slice(prefix.length, end), trailing });
+        const segmentText = segment.slice(prefix.length, end);
+        const speakerMatch = segmentText.match(/^\[([^\]\r\n]+)\]\s*/u);
+        const sentence = {
+            leading: pendingWhitespace + prefix,
+            text: speakerMatch ? segmentText.slice(speakerMatch[0].length) : segmentText,
+            trailing
+        };
+        if (speakerMatch) sentence.speaker = speakerMatch[1].trim();
+        sentences.push(sentence);
         pendingWhitespace = trailing;
     });
     return sentences;
@@ -986,9 +1004,20 @@ function renderTextDocument() {
         sentenceElement.setAttribute("aria-current", String(index === textDocument.activeSentenceIndex));
         if (index === textDocument.activeSentenceIndex) sentenceElement.classList.add("is-active");
 
+        const sentenceBody = document.createElement("span");
+        sentenceBody.className = "text-sentence__body";
+        if (sentence.speaker) {
+            const speakerLabel = document.createElement("span");
+            speakerLabel.className = "text-sentence__speaker";
+            speakerLabel.dir = "ltr";
+            speakerLabel.textContent = sentence.speaker + ":";
+            sentenceBody.appendChild(speakerLabel);
+        }
+
         const sentenceText = document.createElement("span");
         sentenceText.className = "text-sentence__content";
         sentenceText.innerHTML = makeWordsClickable(sentence.text);
+        sentenceBody.appendChild(sentenceText);
 
         const controls = document.createElement("span");
         controls.className = "sentence-controls";
@@ -1025,7 +1054,7 @@ function renderTextDocument() {
         stopButton.textContent = "■ " + uiText("stop");
 
         controls.append(playButton, sentenceModeButton, stopButton);
-        sentenceElement.append(sentenceText, controls);
+        sentenceElement.append(sentenceBody, controls);
         textElement.appendChild(sentenceElement);
     });
 }

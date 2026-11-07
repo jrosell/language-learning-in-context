@@ -153,6 +153,19 @@ body {
     margin-block-start: 0.8em;
 }
 
+.text-sentence__body {
+    min-width: 0;
+}
+
+.text-sentence__speaker {
+    display: inline;
+    margin-inline-end: 0.35em;
+    font-weight: 600;
+    white-space: nowrap;
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+
 .text-sentence__content {
     min-width: 0;
 }

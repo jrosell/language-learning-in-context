@@ -14,7 +14,7 @@ With the app, you can:
 - Edit, import and export a separate vocabulary list for each learning language using CSV.
 - Save vocabulary and example images in your browser.
 
-The welcome text is a three-turn dialogue between Laura and Marta in all twelve languages. Laura asks Marta's name, Marta introduces herself as a student, and Laura welcomes her and introduces herself as a teacher. The dialogue repeats a morning greeting and simple introductions, with speaker names visible on each turn. Original welcome greetings and the longer “The first day” dialogue are upgraded to this simpler version when unedited; edited welcome texts and personal texts are kept.
+The welcome text is a three-turn dialogue between Laura and Marta in all twelve languages. Laura asks Marta's name, Marta introduces herself as a student, and Laura welcomes her and introduces herself as a teacher. Saved dialogue turns use `[Laura]` and `[Marta]` speaker tags; the app displays them as separate labels, outside the clickable vocabulary text and speech playback. Original welcome greetings, the longer “The first day” dialogue, and the previous colon-prefixed dialogue are upgraded to this format when unedited; edited welcome texts and personal texts are kept.
 
 Word segmentation follows the selected language, including Chinese text that does not use spaces between words. Arabic and Urdu text is displayed right to left. The app uses the browser's speech synthesis when available.
 
