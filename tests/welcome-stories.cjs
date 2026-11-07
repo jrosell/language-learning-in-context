@@ -52,16 +52,16 @@ test("all twelve languages open the three-turn welcome dialogue at its first sen
     assert.equal(welcome.content, language.sample, code);
     const turns = welcome.content.split("\n\n");
     assert.equal(turns.length, 3, code + " should have the three approved dialogue turns");
-    const speakers = turns.map(turn => turn.split(/[:：]/u)[0].trim());
+    const speakers = turns.map(turn => turn.match(/^\[([^\]]+)\]/u)?.[1]);
     assert.equal(speakers[0], speakers[2], code + ": Laura should speak first and last");
     assert.notEqual(speakers[0], speakers[1], code + ": Marta should speak second");
     assert.equal(welcome.activeSentenceIndex, 0, code);
     assert.equal(welcome.isStarter, true, code);
   }
   assert.equal(languages.ca.sample, [
-    "Laura: Bon dia! Com et dius?",
-    "Marta: Bon dia! Soc la Marta. Soc estudiant.",
-    "Laura: Benvinguda, Marta! Soc la Laura. Soc mestra."
+    "[Laura] Bon dia! Com et dius?",
+    "[Marta] Bon dia! Soc la Marta. Soc estudiant.",
+    "[Laura] Benvinguda, Marta! Soc la Laura. Soc mestra."
   ].join("\n\n"));
 });
 
@@ -137,9 +137,9 @@ for (const fallback of [false, true]) {
       const { context } = loadApp({ language: code, fallback });
       const sentences = read(context, "splitTextIntoSentences(textDocuments[0].content)");
       assert.equal(sentences.filter(sentence => /\n\s*\n/.test(sentence.leading)).length, 2, code);
-      assert.equal(sentences.filter(sentence => /[:：]/u.test(sentence.text)).length, 3, code);
+      assert.equal(sentences.filter(sentence => sentence.speaker).length, 3, code);
       assert.ok(sentences.every(sentence => sentence.text.trim()), code);
-      const reconstructed = sentences.map(sentence => sentence.leading + sentence.text).join("") + sentences.at(-1).trailing;
+      const reconstructed = sentences.map(sentence => sentence.leading + (sentence.speaker ? "[" + sentence.speaker + "] " : "") + sentence.text).join("") + sentences.at(-1).trailing;
       assert.equal(reconstructed, language.sample, code + " should keep every word and punctuation mark");
     }
   });
