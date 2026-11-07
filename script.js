@@ -798,6 +798,7 @@ function applyLearningLanguageSearch() {
 }
 
 function showReadView() {
+    document.querySelectorAll(".mobile-sheet").forEach(panel => setMobileSheetExpanded(panel, false));
     [".about-container", ".text-container", ".words-container", ".definition-box"].forEach(selector => {
         const panel = document.querySelector(selector);
         if (panel) panel.style.display = "none";
@@ -1116,49 +1117,51 @@ function deleteTextDocument(id) {
     renderSavedTextList();
 }
 
-function setTextManagerExpanded(expanded) {
-    const panel = document.querySelector(".text-container");
-    const handle = document.getElementById("text-manager-handle");
+function setMobileSheetExpanded(panel, expanded) {
+    if (!panel) return;
     panel.classList.toggle("is-expanded", expanded);
-    handle.setAttribute("aria-expanded", String(expanded));
+    const handle = panel.querySelector(".mobile-sheet__handle");
+    if (handle) handle.setAttribute("aria-expanded", String(expanded));
 }
 
-function initializeTextManagerHandle() {
-    const handle = document.getElementById("text-manager-handle");
-    let startY = null;
-    let ignoreClick = false;
+function initializeMobileSheetHandles() {
+    document.querySelectorAll(".mobile-sheet__handle").forEach(handle => {
+        const panel = handle.closest(".mobile-sheet");
+        let startY = null;
+        let ignoreClick = false;
 
-    handle.addEventListener("pointerdown", event => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-        startY = event.clientY;
-        handle.setPointerCapture(event.pointerId);
-    });
-    handle.addEventListener("pointerup", event => {
-        if (startY === null) return;
-        const movement = event.clientY - startY;
-        startY = null;
-        if (Math.abs(movement) < 40) return;
+        handle.addEventListener("pointerdown", event => {
+            if (event.pointerType === "mouse" && event.button !== 0) return;
+            startY = event.clientY;
+            handle.setPointerCapture(event.pointerId);
+        });
+        handle.addEventListener("pointerup", event => {
+            if (startY === null) return;
+            const movement = event.clientY - startY;
+            startY = null;
+            if (Math.abs(movement) < 40) return;
 
-        setTextManagerExpanded(movement < 0);
-        ignoreClick = true;
-        window.setTimeout(() => {
-            ignoreClick = false;
-        }, 0);
-    });
-    handle.addEventListener("pointercancel", () => {
-        startY = null;
-    });
-    handle.addEventListener("click", () => {
-        if (ignoreClick) {
-            ignoreClick = false;
-            return;
-        }
-        setTextManagerExpanded(handle.getAttribute("aria-expanded") !== "true");
+            setMobileSheetExpanded(panel, movement < 0);
+            ignoreClick = true;
+            window.setTimeout(() => {
+                ignoreClick = false;
+            }, 0);
+        });
+        handle.addEventListener("pointercancel", () => {
+            startY = null;
+        });
+        handle.addEventListener("click", () => {
+            if (ignoreClick) {
+                ignoreClick = false;
+                return;
+            }
+            setMobileSheetExpanded(panel, handle.getAttribute("aria-expanded") !== "true");
+        });
     });
 }
 
 function openTextManager() {
-    setTextManagerExpanded(false);
+    setMobileSheetExpanded(document.querySelector(".text-container"), false);
     stopTextPlayback();
     document.querySelector(".text-container").style.display = "block";
     document.querySelector(".words-container").style.display = "none";
@@ -1169,7 +1172,7 @@ function openTextManager() {
 
 function closeTextManager() {
     if (!confirmDiscardTextEditorChanges()) return;
-    setTextManagerExpanded(false);
+    setMobileSheetExpanded(document.querySelector(".text-container"), false);
     document.getElementById("text-editor").hidden = true;
     editingTextId = null;
     showReadView();
@@ -1362,6 +1365,7 @@ function showDefinition(wordText) {
         input.addEventListener('change', () => saveWordState(wordText));
     });
     updateWordColor(wordText, wordData.state);
+    setMobileSheetExpanded(document.getElementById("definition-box"), false);
     document.getElementById('definition-box').style.display = 'block';
     loadImages(wordText);
 }
@@ -1696,6 +1700,7 @@ function initialize() {
     function showVocabularyView() {
        const copyPasteContainer = document.querySelector('.words-container');    
        copyPasteContainer.style.display = 'block';
+       setMobileSheetExpanded(copyPasteContainer, false);
        const aboutContainer = document.querySelector('.about-container');  
        aboutContainer.style.display = 'none';
        const definitionBox = document.querySelector('.definition-box');
@@ -1712,6 +1717,7 @@ function initialize() {
     document.getElementById('toggle-about').onclick = function() {
         const aboutContainer = document.querySelector('.about-container');
         aboutContainer.style.display = 'block';
+        setMobileSheetExpanded(aboutContainer, false);
         const copyPasteContainer = document.querySelector('.words-container');    
         copyPasteContainer.style.display = 'none';
         const definitionBox = document.querySelector('.definition-box');
@@ -1720,6 +1726,9 @@ function initialize() {
         textContainer.style.display = 'none';
     };    
     initializeTextManagerHandle();
+    initializeMobileSheetHandles();
+    document.getElementById('close-about-panel').onclick = showReadView;
+    document.getElementById('close-vocabulary-panel').onclick = showReadView;
     document.getElementById('close-text-manager').onclick = closeTextManager;
     document.getElementById('new-text-button').onclick = startNewTextEditor;
     document.getElementById('add-text-tab').onclick = function() {

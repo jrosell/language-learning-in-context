@@ -37,8 +37,12 @@
         <div id="text" aria-label="Text" data-i18n-aria-label="text"></div>
     </div>
     <div class="sidebar">
-        <div class="about-container">
-            <h1 data-i18n="aboutTitle">About</h1>
+        <div class="about-container mobile-sheet" id="about-panel">
+            <button type="button" class="mobile-sheet__handle" aria-controls="about-panel" aria-expanded="false" aria-label="Expand or collapse this panel" title="Expand or collapse this panel" data-i18n-aria-label="togglePanelSize" data-i18n-title="togglePanelSize"></button>
+            <div class="mobile-sheet__header">
+                <h1 data-i18n="aboutTitle">About</h1>
+                <button type="button" id="close-about-panel" class="panel-close mobile-sheet__close" aria-label="Close" title="Close" data-i18n-aria-label="close" data-i18n-title="close">×</button>
+            </div>
             <h2 data-i18n="aboutSubtitle">Language learning in context</h2>
             <p data-i18n="aboutIntro">Hello! I'm Jordi Rosell. I created this app to help language learners acquire vocabulary in context.</p>
 
@@ -58,9 +62,9 @@
             <p><span data-i18n="aboutFeedback">Send feedback or contribute on </span><a href="https://github.com/jrosell/language-learning-in-context/">GitHub</a>.</p>
             <p><span data-i18n="aboutClosing">I hope you enjoy it!</span><br><a href="https://mastodon.social/@jrosell">@jrosell</a></p>
         </div>
-        <div class="text-container" id="text-manager" style="display:none;">
-            <button type="button" id="text-manager-handle" class="text-container__handle" aria-controls="text-manager" aria-expanded="false" aria-label="Expand or collapse the text manager" title="Expand or collapse the text manager" data-i18n-aria-label="toggleTextManagerSize" data-i18n-title="toggleTextManagerSize"></button>
-            <div class="text-container__header">
+        <div class="text-container mobile-sheet" id="text-manager" style="display:none;">
+            <button type="button" id="text-manager-handle" class="mobile-sheet__handle" aria-controls="text-manager" aria-expanded="false" aria-label="Expand or collapse this panel" title="Expand or collapse this panel" data-i18n-aria-label="togglePanelSize" data-i18n-title="togglePanelSize"></button>
+            <div class="text-container__header mobile-sheet__header">
                 <h1 data-i18n="textsTitle">Texts</h1>
                 <button type="button" id="close-text-manager" class="panel-close" aria-label="Close text manager" title="Close" data-i18n-aria-label="closeTextManager" data-i18n-title="closeTextManager">×</button>
             </div>
@@ -80,8 +84,12 @@
                 </div>
             </section>
         </div>
-        <div class="words-container" style="display:none;">   
-            <h1 data-i18n="vocabularyTitle">Your vocabulary</h1>     
+        <div class="words-container mobile-sheet" id="vocabulary-panel" style="display:none;">
+            <button type="button" class="mobile-sheet__handle" aria-controls="vocabulary-panel" aria-expanded="false" aria-label="Expand or collapse this panel" title="Expand or collapse this panel" data-i18n-aria-label="togglePanelSize" data-i18n-title="togglePanelSize"></button>   
+            <div class="mobile-sheet__header">
+                <h1 data-i18n="vocabularyTitle">Your vocabulary</h1>
+                <button type="button" id="close-vocabulary-panel" class="panel-close mobile-sheet__close" aria-label="Close" title="Close" data-i18n-aria-label="close" data-i18n-title="close">×</button>
+            </div>     
             <p><span data-i18n="vocabularyInstructions">Upload, edit, or download your word list as a CSV file.</span><br><code>state;word;definition;example1;image1;example2;image2;...</code>
             </p>
             <p><textarea id="csv-input" class="copy-paste-area" rows="15" cols="40"></textarea></p>
@@ -91,9 +99,9 @@
             <button id="upload-link" class="edit-button" data-i18n="uploadCsv">Upload CSV</button> <input type="file" id="csv-upload" accept=".csv" style="display: none;"> |
             <a href="#" id="download-images-button" class="edit-button" onclick="downloadAllImages()" data-i18n="downloadImages">Download images</a>
         </div>
-        <div id="definition-box" class="definition-box" style="display:none;">
-            <div class="definition-box__header">
-                <span class="definition-box__handle" aria-hidden="true"></span>
+        <div id="definition-box" class="definition-box mobile-sheet" style="display:none;">
+            <button type="button" class="mobile-sheet__handle" aria-controls="definition-box" aria-expanded="false" aria-label="Expand or collapse this panel" title="Expand or collapse this panel" data-i18n-aria-label="togglePanelSize" data-i18n-title="togglePanelSize"></button>
+            <div class="definition-box__header mobile-sheet__header">
                 <button type="button" class="definition-box__close" aria-label="Close word details" data-i18n-aria-label="closeWordDetails" onclick="document.getElementById('definition-box').style.display='none';" data-i18n="close">Close</button>
             </div>
             <div id="state-selection"></div>
