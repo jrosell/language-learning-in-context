@@ -755,7 +755,7 @@ label input[type="radio"]:checked[value="learned"] + span {
         max-height: 68vh;
         max-height: 68dvh;
         margin: 0;
-        padding: 8px 18px calc(18px + env(safe-area-inset-bottom));
+        padding: 8px 15px calc(18px + env(safe-area-inset-bottom));
         overflow-y: auto;
         overscroll-behavior: contain;
         border: 1px solid #ccc;
