@@ -218,6 +218,10 @@ body {
     font-size: 1.1rem !important;
 }
 
+.text-container__handle {
+    display: none;
+}
+
 .text-container__header {
     display: flex;
     align-items: center;
@@ -757,19 +761,43 @@ label input[type="radio"]:checked[value="learned"] + span {
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.16);
     }
 
-    .text-container::before {
-        display: block;
+    .text-container__handle {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 36px;
+        margin: -8px 0 0;
+        padding: 0;
+        border: 0;
+        background: #fff;
+        cursor: grab;
+        touch-action: none;
+    }
+
+    .text-container__handle::before {
         width: 36px;
         height: 4px;
-        margin: 0 auto 8px;
         border-radius: 999px;
         background: #bbb;
         content: "";
     }
 
+    .text-container__handle:active {
+        cursor: grabbing;
+    }
+
+    .text-container.is-expanded {
+        top: env(safe-area-inset-top, 0px);
+        max-height: none;
+    }
+
     .text-container__header {
         position: sticky;
-        top: 0;
+        top: 36px;
         z-index: 1;
         padding: 4px 0;
         background: #fff;
