@@ -44,20 +44,25 @@ function read(context, expression) {
 
 const languages = read(loadApp().context, "learningLanguages");
 
-test("all twelve languages open the complete welcome dialogue at its first sentence", () => {
+test("all twelve languages open the three-turn welcome dialogue at its first sentence", () => {
   assert.equal(Object.keys(languages).length, 12);
   for (const [code, language] of Object.entries(languages)) {
     const { context } = loadApp({ language: code });
     const [welcome] = read(context, "textDocuments");
     assert.equal(welcome.content, language.sample, code);
-    assert.equal(welcome.content.split("\n\n").length, 24, code + " should have every dialogue turn");
+    const turns = welcome.content.split("\n\n");
+    assert.equal(turns.length, 3, code + " should have the three approved dialogue turns");
+    const speakers = turns.map(turn => turn.split(/[:：]/u)[0].trim());
+    assert.equal(speakers[0], speakers[2], code + ": Laura should speak first and last");
+    assert.notEqual(speakers[0], speakers[1], code + ": Marta should speak second");
     assert.equal(welcome.activeSentenceIndex, 0, code);
     assert.equal(welcome.isStarter, true, code);
   }
-  assert.match(languages.ca.sample, /^—Bon dia!/);
-  assert.match(languages.ca.sample, /soc estudiant/);
-  assert.match(languages.ca.sample, /soc la professora/);
-  assert.match(languages.ca.sample, /—Sí, benvingut a classe!$/);
+  assert.equal(languages.ca.sample, [
+    "Laura: Bon dia! Com et dius?",
+    "Marta: Bon dia! Soc la Marta. Soc estudiant.",
+    "Laura: Benvinguda, Marta! Soc la Laura. Soc mestra."
+  ].join("\n\n"));
 });
 
 test("English is the default for new users and unknown saved language codes", () => {
@@ -68,27 +73,32 @@ test("English is the default for new users and unknown saved language codes", ()
   }
 });
 
-test("original saved greetings are upgraded without changing document IDs, tabs, or personal texts", () => {
+test("both former welcome versions upgrade without changing IDs, tabs, personal texts, or edited stories", () => {
   for (const [code, language] of Object.entries(languages)) {
-    const customText = { id: "mine", title: "My text", content: language.legacySample, activeSentenceIndex: 2, isStarter: false };
-    const { context, storage } = loadApp({
-      language: code,
-      documents: [
-        { id: "welcome", title: "My welcome title", content: language.legacySample, activeSentenceIndex: 1, isStarter: true },
-        customText
-      ],
-      openIds: ["mine", "welcome"],
-      activeId: "mine"
-    });
-    const saved = read(context, "textDocuments");
-    assert.equal(saved[0].content, language.sample, code);
-    assert.equal(saved[0].id, "welcome", code);
-    assert.equal(saved[0].title, "My welcome title", code);
-    assert.equal(saved[0].activeSentenceIndex, 0, code);
-    assert.deepEqual(saved[1], customText, code);
-    assert.deepEqual(JSON.parse(storage.get(documentsKey)), saved, code);
-    assert.deepEqual(read(context, "openTextIds"), ["mine", "welcome"], code);
-    assert.equal(read(context, "activeTextId"), "mine", code);
+    for (const legacyContent of [language.legacySample, language.previousSample]) {
+      const customText = { id: "mine", title: "My text", content: legacyContent, activeSentenceIndex: 2, isStarter: false };
+      const editedStarter = { id: "edited", title: "Edited welcome", content: legacyContent + "\nMy own words.", activeSentenceIndex: 1, isStarter: true };
+      const { context, storage } = loadApp({
+        language: code,
+        documents: [
+          { id: "welcome", title: "My welcome title", content: legacyContent, activeSentenceIndex: 1, isStarter: true },
+          customText,
+          editedStarter
+        ],
+        openIds: ["mine", "welcome"],
+        activeId: "mine"
+      });
+      const saved = read(context, "textDocuments");
+      assert.equal(saved[0].content, language.sample, code);
+      assert.equal(saved[0].id, "welcome", code);
+      assert.equal(saved[0].title, "My welcome title", code);
+      assert.equal(saved[0].activeSentenceIndex, 0, code);
+      assert.deepEqual(saved[1], customText, code);
+      assert.deepEqual(saved[2], editedStarter, code);
+      assert.deepEqual(JSON.parse(storage.get(documentsKey)), saved, code);
+      assert.deepEqual(read(context, "openTextIds"), ["mine", "welcome"], code);
+      assert.equal(read(context, "activeTextId"), "mine", code);
+    }
   }
 });
 
@@ -103,7 +113,7 @@ test("edited welcome texts and reading positions in the new story survive reload
 test("a legacy greeting from an earlier language follows the currently selected language", () => {
   const { context } = loadApp({
     language: "ca",
-    documents: [{ id: "welcome", content: languages.de.legacySample, isStarter: true }]
+    documents: [{ id: "welcome", content: languages.de.previousSample, isStarter: true }]
   });
   assert.equal(read(context, "textDocuments[0].content"), languages.ca.sample);
 });
@@ -113,7 +123,7 @@ test("a full browser store does not discard personal texts during migration", ()
     language: "en",
     fullStorage: true,
     documents: [
-      { id: "welcome", content: languages.en.legacySample, isStarter: true },
+      { id: "welcome", content: languages.en.previousSample, isStarter: true },
       { id: "mine", content: "Keep this personal text.", isStarter: false }
     ]
   });
@@ -126,8 +136,8 @@ for (const fallback of [false, true]) {
     for (const [code, language] of Object.entries(languages)) {
       const { context } = loadApp({ language: code, fallback });
       const sentences = read(context, "splitTextIntoSentences(textDocuments[0].content)");
-      assert.equal(sentences.filter(sentence => /\n\s*\n/.test(sentence.leading)).length, 23, code);
-      assert.equal(sentences.filter(sentence => sentence.text.startsWith("—")).length, 24, code);
+      assert.equal(sentences.filter(sentence => /\n\s*\n/.test(sentence.leading)).length, 2, code);
+      assert.equal(sentences.filter(sentence => /[:：]/u.test(sentence.text)).length, 3, code);
       assert.ok(sentences.every(sentence => sentence.text.trim()), code);
       const reconstructed = sentences.map(sentence => sentence.leading + sentence.text).join("") + sentences.at(-1).trailing;
       assert.equal(reconstructed, language.sample, code + " should keep every word and punctuation mark");

@@ -104,7 +104,7 @@ captures:
         value: estudiant
       - type: text-contains
         selector: "#text"
-        value: professora
+        value: mestra
       - type: welcome-dialogue
       - type: no-horizontal-overflow
 
