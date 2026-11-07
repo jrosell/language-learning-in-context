@@ -538,9 +538,10 @@ function loadTextDocuments() {
                     .map(language => getWelcomeDialogueBody(language.sample)));
                 let upgraded = false;
                 documents.forEach(document => {
+                    const isCurrentWelcome = document.content.trim() === learningLanguages[currentLanguage].sample.trim();
                     const isLegacyWelcome = legacySamples.has(document.content.trim());
                     const isPreviousSpeakerFormat = welcomeDialogueBodies.has(getWelcomeDialogueBody(document.content));
-                    if (document.isStarter && (isLegacyWelcome || isPreviousSpeakerFormat)) {
+                    if (document.isStarter && !isCurrentWelcome && (isLegacyWelcome || isPreviousSpeakerFormat)) {
                         document.content = learningLanguages[currentLanguage].sample;
                         document.activeSentenceIndex = 0;
                         upgraded = true;
